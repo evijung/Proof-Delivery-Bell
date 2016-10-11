@@ -1,7 +1,7 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 /**
- * Created by tunyaporns on 10/11/2016.
+ * Created by musz on 10/11/2016.
  */
 
 public class MyConstant {
@@ -10,6 +10,37 @@ public class MyConstant {
     private String titleHaveSpaceString = "มีช่องว่าง";
     private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง ค่ะ!";
 
+    private  String urlUserString  = "http://service.eternity.co.th/TmsPXD/app/CenterService/getUser.php";
+    private String[] columLogin = new String[]{"drv_id","drv_name"};
+    private String titleUserFalesString = "User False";
+    private String messageUserFalesString = "ไม่มี User นี้ในฐานข้อมูลของเรา";
+    private String titlePasswordFalse = "Password ผิด";
+    private String messagePasswordFalse = "กรุณาลองใหม่ Passwordผิด";
+
+
+    public String getTitlePasswordFalse() {
+        return titlePasswordFalse;
+    }
+
+    public String getMessagePasswordFalse() {
+        return messagePasswordFalse;
+    }
+
+    public String getTitleUserFalesString() {
+        return titleUserFalesString;
+    }
+
+    public String getMessageUserFalesString() {
+        return messageUserFalesString;
+    }
+
+    public String[] getColumLogin() {
+        return columLogin;
+    }
+
+    public String getUrlUserString() {
+        return urlUserString;
+    }
 
     public int getIconAnInt() {
         return iconAnInt;

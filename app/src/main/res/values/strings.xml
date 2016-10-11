@@ -1,7 +1,17 @@
 <resources>
     <string name="app_name">Proof Delivery</string>
-    <string name="sign_in">Sign In</string>
-    <string name="user">Username</string>
-    <string name="password">Password</string>
 
+    <string name="sign_in">Sign In</string>
+    <string name="user">User</string>
+    <string name="password">Password</string>
+    <string name="close">Close</string>
+    <string name="driver_name">Name</string>
+    <string name="truck">Truck</string>
+    <string name="license">License</string>
+    <string name="joblist">Joblist</string>
+    <string name="name">.....</string>
+    <string name="date">Date</string>
+    <string name="job">Job</string>
+    <string name="store">Store</string>
+    <string name="time">Delivery Time</string>
 </resources>
