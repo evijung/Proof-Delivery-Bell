@@ -3,9 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="h_button">16sp</dimen>
-    <dimen name="h1">24sp</dimen>
-    <dimen name="h2">20sp</dimen>
-    <dimen name="block">300dp</dimen>
+    <dimen name="h_button">36sp</dimen>
+    <dimen name="h1">56sp</dimen>
+    <dimen name="block">720dp</dimen>
     <dimen name="padding">20dp</dimen>
+    <dimen name="logo_width">300dp</dimen>
 </resources>
