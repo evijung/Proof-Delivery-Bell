@@ -1,5 +1,6 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -78,9 +79,18 @@ public class MainActivity extends AppCompatActivity {
         private String[] logingStrings = new String[2]; //for User success login
         private String[] columLoginStrings;
         private String truePasswordString;
+        private ProgressDialog progressDialog;
 
         public SynUser(Context context) {
             this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
         }
 
         @Override
@@ -103,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+
+            progressDialog.dismiss();
             Log.d("11octV1", "JSON---->" + s);
             MyConstant myConstant = new MyConstant();
             columLoginStrings = myConstant.getColumLogin();

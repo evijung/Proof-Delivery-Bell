@@ -15,8 +15,17 @@ public class MyConstant {
     private String titleUserFalesString = "User False";
     private String messageUserFalesString = "ไม่มี User นี้ในฐานข้อมูลของเรา";
     private String titlePasswordFalse = "Password ผิด";
-    private String messagePasswordFalse = "กรุณาลองใหม่ Passwordผิด";
+    private String messagePasswordFalse = "กรุณาลองใหม่ Password ผิด";
+    private String urlDataWhereDriverID = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlan.php";
+    private String urlDataWhereDriverIDanDate = "";
 
+    public String getUrlDataWhereDriverIDanDate() {
+        return urlDataWhereDriverIDanDate;
+    }
+
+    public String getUrlDataWhereDriverID() {
+        return urlDataWhereDriverID;
+    }
 
     public String getTitlePasswordFalse() {
         return titlePasswordFalse;
