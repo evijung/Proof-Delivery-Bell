@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -248,6 +249,17 @@ public class ServiceActivity extends AppCompatActivity {
                 DetailAdapter detailAdapter = new DetailAdapter(context,
                         workSheetStrings, storeNameStrings, planArrivalTimeStrings);
                 listView.setAdapter(detailAdapter);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Intent intent = new Intent(ServiceActivity.this,DetailJob.class);
+                        intent.putExtra("Login", loginStrings);
+                        intent.putExtra("planDtl2_id", planDtl2_idStrings[i]);
+                        startActivity(intent);
+
+                    }
+                });
 
 
             } catch (Exception e) {
