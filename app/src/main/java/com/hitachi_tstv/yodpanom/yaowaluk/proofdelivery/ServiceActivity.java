@@ -16,6 +16,9 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class ServiceActivity extends AppCompatActivity {
 
     //Explicit
@@ -24,6 +27,8 @@ public class ServiceActivity extends AppCompatActivity {
     private ListView listView;
     private String[] loginStrings;
     private MyConstant myConstant = new MyConstant();
+    private String[] planDateStrings, cnt_storeStrings;
+    private boolean aBoolean = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +66,9 @@ public class ServiceActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
+//            progressDialog = new ProgressDialog(context);
+//            progressDialog.setMessage("Loading...");
+//            progressDialog.show();
         }
 
         @Override
@@ -88,8 +93,31 @@ public class ServiceActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
             Log.d("12octV1", "JSON ==> " + s);
+
+            try {
+
+                JSONArray jsonArray = new JSONArray(s);
+                planDateStrings = new String[jsonArray.length()];
+                cnt_storeStrings = new String[jsonArray.length()];
+                for (int i = 0;i < jsonArray.length();i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    planDateStrings[i] = jsonObject.getString("planDate");
+                    cnt_storeStrings[i] = jsonObject.getString("cnt_store");
+                }//for
+                if (aBoolean) {
+                    //true :: not click on button
+                    jobListButton.setText("Job List :: " + planDateStrings[0]);
+
+                }
+
+
+
+            } catch (Exception e) {
+                Log.d("12octV1", "e onPost ==> " + e.toString());
+
+            }
         }
     }//SynDataWhereByDriverID
 
