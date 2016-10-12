@@ -153,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
                     //password true
                     Intent intent = new Intent(MainActivity.this, ServiceActivity.class);
                     intent.putExtra("Login", logingStrings);
+                    intent.putExtra("Date", "");
+                    intent.putExtra("PlanId", "");
                     startActivity(intent);
                     finish();
 
