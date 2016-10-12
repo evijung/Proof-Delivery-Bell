@@ -29,7 +29,7 @@ public class ServiceActivity extends AppCompatActivity {
     private ListView listView;
     private String[] loginStrings;
     private MyConstant myConstant = new MyConstant();
-    private String[] planDateStrings, cnt_storeStrings;
+    private String[] planDateStrings, cnt_storeStrings, planIdStrings;
     private boolean aBoolean = true;
 
     @Override
@@ -54,11 +54,19 @@ public class ServiceActivity extends AppCompatActivity {
         SynDataWhereByDriverID synDataWhereByDriverID = new SynDataWhereByDriverID(ServiceActivity.this);
         synDataWhereByDriverID.execute(myConstant.getUrlDataWhereDriverID());
 
+        //Close Controller
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }//Main Method
 
     private class SynDataWhereByDriverID extends AsyncTask<String, Void, String> {
         //Explicit
-        private ProgressDialog progressDialog;
+//        private ProgressDialog progressDialog;
         private Context context;
 
         public SynDataWhereByDriverID(Context context) {
@@ -68,9 +76,9 @@ public class ServiceActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
+//            progressDialog = new ProgressDialog(context);
+//            progressDialog.setMessage("Loading...");
+//            progressDialog.show();
         }
 
         @Override
@@ -95,7 +103,7 @@ public class ServiceActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
             Log.d("12octV1", "JSON ==> " + s);
 
             try {
@@ -103,14 +111,19 @@ public class ServiceActivity extends AppCompatActivity {
                 JSONArray jsonArray = new JSONArray(s);
                 planDateStrings = new String[jsonArray.length()];
                 cnt_storeStrings = new String[jsonArray.length()];
+                planIdStrings = new String[jsonArray.length()];
                 for (int i = 0;i < jsonArray.length();i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     planDateStrings[i] = jsonObject.getString("planDate");
                     cnt_storeStrings[i] = jsonObject.getString("cnt_store");
+                    planIdStrings[i] = jsonObject.getString("planId");
                 }//for
+                Log.d("TAG", "TAG");
                 if (aBoolean) {
                     //true :: not click on button
                     jobListButton.setText("Job List :: " + planDateStrings[0]);
+
+                    createDetailList(planIdStrings[0]);
                 }
 
                 //Get Event From Click
@@ -133,4 +146,58 @@ public class ServiceActivity extends AppCompatActivity {
         }
     }//SynDataWhereByDriverID
 
+    private void createDetailList(String planIdString) {
+
+        SynDetail synDetail = new SynDetail(ServiceActivity.this, planIdString );
+        synDetail.execute(myConstant.getUrlDataWhereDriverIDanDate());
+
+    }//create Detail List
+
+    private class SynDetail extends AsyncTask<String, Void, String> {
+        //Explicit
+        private ProgressDialog progressDialog;
+        private Context context;
+        private String planIdString;
+
+        public SynDetail(Context context, String planIdString) {
+            this.context = context;
+            this.planIdString = planIdString;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            progressDialog.dismiss();
+            Log.d("12octV2", "JSON ==> " + s);
+
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                RequestBody requestBody = new FormEncodingBuilder().add("isAdd", "true").add("planId", planIdString).add("driver_id", loginStrings[0]).build();
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.url(strings[0]).post(requestBody).build();
+                Response response = okHttpClient.newCall(request).execute();
+                return response.body().string();
+
+            } catch (Exception e) {
+                Log.d("12octV2", "e doInBack ==> " + e.toString());
+                return null;
+            }
+        }
+    }
 }//Main Class
