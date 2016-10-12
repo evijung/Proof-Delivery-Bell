@@ -2,10 +2,12 @@ package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -66,9 +68,9 @@ public class ServiceActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            progressDialog = new ProgressDialog(context);
-//            progressDialog.setMessage("Loading...");
-//            progressDialog.show();
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
         }
 
         @Override
@@ -93,7 +95,7 @@ public class ServiceActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-//            progressDialog.dismiss();
+            progressDialog.dismiss();
             Log.d("12octV1", "JSON ==> " + s);
 
             try {
@@ -109,8 +111,18 @@ public class ServiceActivity extends AppCompatActivity {
                 if (aBoolean) {
                     //true :: not click on button
                     jobListButton.setText("Job List :: " + planDateStrings[0]);
-
                 }
+
+                //Get Event From Click
+                jobListButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(ServiceActivity.this, JobListView.class);
+                        intent.putExtra("Date", planDateStrings);
+                        intent.putExtra("Store", cnt_storeStrings);
+                        startActivity(intent);
+                    }//On Click
+                });
 
 
 

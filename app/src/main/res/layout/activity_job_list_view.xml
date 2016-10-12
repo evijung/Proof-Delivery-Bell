@@ -10,4 +10,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery.JobListView">
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/livShowDate" />
 </RelativeLayout>
