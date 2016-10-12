@@ -10,14 +10,19 @@ public class MyConstant {
     private String titleHaveSpaceString = "มีช่องว่าง";
     private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง ค่ะ!";
 
-    private  String urlUserString  = "http://service.eternity.co.th/TmsPXD/app/CenterService/getUser.php";
-    private String[] columLogin = new String[]{"drv_id","drv_name"};
+    private String urlUserString = "http://service.eternity.co.th/TmsPXD/app/CenterService/getUser.php";
+    private String[] columLogin = new String[]{"drv_id", "drv_name"};
     private String titleUserFalesString = "User False";
     private String messageUserFalesString = "ไม่มี User นี้ในฐานข้อมูลของเรา";
     private String titlePasswordFalse = "Password ผิด";
     private String messagePasswordFalse = "กรุณาลองใหม่ Password ผิด";
     private String urlDataWhereDriverID = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlan.php";
     private String urlDataWhereDriverIDanDate = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlanDtl.php";
+    private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
+
+    public String getUrlDetailWherePlanId() {
+        return urlDetailWherePlanId;
+    }
 
     public String getUrlDataWhereDriverIDanDate() {
         return urlDataWhereDriverIDanDate;

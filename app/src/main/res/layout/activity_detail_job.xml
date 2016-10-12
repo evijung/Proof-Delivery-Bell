@@ -22,35 +22,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView14"
-            android:textSize="@dimen/h2" />
+            android:textSize="@dimen/h2"
+            android:layout_margin="@dimen/mini_margin" />
 
         <TextView
             android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView15"
-            android:textSize="@dimen/h2" />
+            android:textSize="@dimen/h2"
+            android:layout_margin="@dimen/mini_margin" />
 
         <TextView
             android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView16"
-            android:textSize="@dimen/h2" />
+            android:textSize="@dimen/h2"
+            android:layout_margin="@dimen/mini_margin" />
 
         <TextView
             android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView17"
-            android:textSize="@dimen/h2" />
+            android:textSize="@dimen/h2"
+            android:layout_margin="@dimen/mini_margin" />
 
         <TextView
             android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView18"
-            android:textSize="@dimen/h2" />
+            android:textSize="@dimen/h2"
+            android:layout_margin="@dimen/mini_margin" />
     </LinearLayout>
 
     <ListView
@@ -100,15 +105,15 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
+                android:text="Arrived"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/button7"
                 android:layout_weight="1" />
 
             <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
+                android:text="Take Img"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/button6"
                 android:layout_weight="1" />
@@ -120,18 +125,18 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
+                android:text="Confirm"
                 android:layout_height="wrap_content"
                 android:id="@+id/button9"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:layout_width="0dp" />
 
             <Button
-                android:text="Button"
-                android:layout_width="wrap_content"
+                android:text="Signature"
                 android:layout_height="wrap_content"
                 android:id="@+id/button8"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:layout_width="0dp" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
