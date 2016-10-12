@@ -18,44 +18,34 @@
         android:id="@+id/linTopDetail">
 
         <TextView
-            android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView14"
-            android:textSize="@dimen/h2"
-            android:layout_margin="@dimen/mini_margin" />
+            android:textSize="@dimen/h2" />
 
         <TextView
-            android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView15"
-            android:textSize="@dimen/h2"
-            android:layout_margin="@dimen/mini_margin" />
+            android:textSize="@dimen/h2" />
 
         <TextView
-            android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView16"
-            android:textSize="@dimen/h2"
-            android:layout_margin="@dimen/mini_margin" />
+            android:textSize="@dimen/h2" />
 
         <TextView
-            android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView17"
-            android:textSize="@dimen/h2"
-            android:layout_margin="@dimen/mini_margin" />
+            android:textSize="@dimen/h2" />
 
         <TextView
-            android:text="TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView18"
-            android:textSize="@dimen/h2"
-            android:layout_margin="@dimen/mini_margin" />
+            android:textSize="@dimen/h2" />
     </LinearLayout>
 
     <ListView
