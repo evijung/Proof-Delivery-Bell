@@ -24,7 +24,7 @@ public class JobListView extends AppCompatActivity {
         String[] storeStrings = getIntent().getStringArrayExtra("Store");
         final String[] planIdStrings = getIntent().getStringArrayExtra("PlanId");
         final String[] loginStrings = getIntent().getStringArrayExtra("Login");
-        final String[] truckIdStrings = getIntent().getStringArrayExtra("TruckId");
+        final String[] truckIdStrings = getIntent().getStringArrayExtra("TruckNo");
 
         DateAdapter dateAdapter = new DateAdapter(JobListView.this, dateStrings, storeStrings);
         listView.setAdapter(dateAdapter);
@@ -36,7 +36,7 @@ public class JobListView extends AppCompatActivity {
                 intent.putExtra("Date", dateStrings[i]);
                 intent.putExtra("Login", loginStrings);
                 intent.putExtra("PlanId", planIdStrings[i]);
-                intent.putExtra("TruckId", truckIdStrings[i]);
+                intent.putExtra("TruckNo", truckIdStrings[i]);
                 startActivity(intent);
                 finish();
 

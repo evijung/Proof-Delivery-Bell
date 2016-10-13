@@ -20,17 +20,12 @@ public class MyConstant {
     private String urlDataWhereDriverIDanDate = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlanDtl.php";
     private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
     private String urlContainerList = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl_Listview.php";
-    private String urlTruckLicense = "";
     private String urlArrivalGPS = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateArrivalFromDriver.php";
 
 
 
     public String getUrlArrivalGPS() {
         return urlArrivalGPS;
-    }
-
-    public String getUrlTruckLicense() {
-        return urlTruckLicense;
     }
 
     public String getUrlContainerList() {

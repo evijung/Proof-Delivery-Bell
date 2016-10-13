@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("Login", logingStrings);
                     intent.putExtra("Date", "");
                     intent.putExtra("PlanId", "");
-                    intent.putExtra("TruckId", "");
+                    intent.putExtra("TruckNo", "");
                     startActivity(intent);
                     finish();
 

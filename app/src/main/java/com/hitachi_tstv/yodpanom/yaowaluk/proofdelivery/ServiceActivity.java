@@ -54,12 +54,10 @@ public class ServiceActivity extends AppCompatActivity {
         loginStrings = getIntent().getStringArrayExtra("Login");
         driverChooseString = getIntent().getStringExtra("PlanId");
         dateChooseString = getIntent().getStringExtra("Date");
-        truckString = getIntent().getStringExtra("TruckId");
+        truckString = getIntent().getStringExtra("TruckNo");
 
         if (driverChooseString.length() != 0) {
-
             aBoolean = false;
-
         } else {
             //From Main Activity
 
@@ -84,42 +82,6 @@ public class ServiceActivity extends AppCompatActivity {
 
 
     }   // Main Method
-
-    private class SynTruckLicense extends AsyncTask<String, Void, String> {
-        //Explicit
-        private Context context;
-        private String truckIDString;
-
-
-        public SynTruckLicense(Context context, String truckIDString) {
-            this.context = context;
-            this.truckIDString = truckIDString;
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            try {
-                OkHttpClient okHttpClient = new OkHttpClient();
-                RequestBody requestBody = new FormEncodingBuilder().add("isAdd", "true").add("TruckId", truckIDString).build();
-                Request.Builder builder = new Request.Builder();
-                Request request = builder.url(myConstant.getUrlTruckLicense()).post(requestBody).build();
-                Response response = okHttpClient.newCall(request).execute();
-
-                return response.body().string();
-            } catch (IOException e) {
-                Log.d("Tag", "e doInBack ==> " + e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            Log.d("Tag", "JSON ==> " + s);
-        }
-    }
-
 
     private class SynDataWhereByDriverID extends AsyncTask<String, Void, String> {
 
@@ -180,13 +142,15 @@ public class ServiceActivity extends AppCompatActivity {
                 if (aBoolean) {
 
                     //True Not Click on Button
-                    jobListButton.setText("Job List = " + planDateStrings[0]);
-                    truckString = truckIdStrings[0];
+                    jobListButton.setText("Job List : " + planDateStrings[0]);
+                    idDriverTextView.setText(truckIdStrings[0]);
                     createDetailList(planIdStrings[0]);
 
                 } else {
                     // From Job List View
                     jobListButton.setText("Job List = " + dateChooseString);
+                    idDriverTextView.setText(truckString);
+
                     createDetailList(driverChooseString);
                 }
 
@@ -201,7 +165,7 @@ public class ServiceActivity extends AppCompatActivity {
                         intent.putExtra("Store", cnt_storeStrings);
                         intent.putExtra("Login", loginStrings);
                         intent.putExtra("PlanId", planIdStrings);
-                        intent.putExtra("TruckId", truckIdStrings);
+                        intent.putExtra("TruckNo", truckIdStrings);
                         startActivity(intent);
                         finish();
 
