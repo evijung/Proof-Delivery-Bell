@@ -11,7 +11,7 @@ public class MyConstant {
     private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง ค่ะ!";
 
     private String urlUserString = "http://service.eternity.co.th/TmsPXD/app/CenterService/getUser.php";
-    private String[] columLogin = new String[]{"drv_id", "drv_name"};
+    private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username"};
     private String titleUserFalesString = "User False";
     private String messageUserFalesString = "ไม่มี User นี้ในฐานข้อมูลของเรา";
     private String titlePasswordFalse = "Password ผิด";
@@ -20,6 +20,18 @@ public class MyConstant {
     private String urlDataWhereDriverIDanDate = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlanDtl.php";
     private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
     private String urlContainerList = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl_Listview.php";
+    private String urlTruckLicense = "";
+    private String urlArrivalGPS = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateArrivalFromDriver.php";
+
+
+
+    public String getUrlArrivalGPS() {
+        return urlArrivalGPS;
+    }
+
+    public String getUrlTruckLicense() {
+        return urlTruckLicense;
+    }
 
     public String getUrlContainerList() {
         return urlContainerList;

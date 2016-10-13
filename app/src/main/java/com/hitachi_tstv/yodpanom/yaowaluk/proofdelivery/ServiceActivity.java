@@ -21,6 +21,8 @@ import com.squareup.okhttp.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class ServiceActivity extends AppCompatActivity {
 
     //Explicit
@@ -32,8 +34,8 @@ public class ServiceActivity extends AppCompatActivity {
     private String[] planDateStrings, cnt_storeStrings, planIdStrings;
     private boolean aBoolean = true;
     private String[] workSheetStrings, storeNameStrings,
-            planArrivalTimeStrings, planDtl2_idStrings;
-    private String driverChooseString, dateChooseString;
+            planArrivalTimeStrings, planDtl2_idStrings, truckIdStrings;
+    private String driverChooseString, dateChooseString, truckString;
 
 
     @Override
@@ -52,6 +54,7 @@ public class ServiceActivity extends AppCompatActivity {
         loginStrings = getIntent().getStringArrayExtra("Login");
         driverChooseString = getIntent().getStringExtra("PlanId");
         dateChooseString = getIntent().getStringExtra("Date");
+        truckString = getIntent().getStringExtra("TruckId");
 
         if (driverChooseString.length() != 0) {
 
@@ -69,6 +72,8 @@ public class ServiceActivity extends AppCompatActivity {
         SynDataWhereByDriverID synDataWhereByDriverID = new SynDataWhereByDriverID(ServiceActivity.this);
         synDataWhereByDriverID.execute(myConstant.getUrlDataWhereDriverID());
 
+
+
         //Close Controller
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +85,40 @@ public class ServiceActivity extends AppCompatActivity {
 
     }   // Main Method
 
+    private class SynTruckLicense extends AsyncTask<String, Void, String> {
+        //Explicit
+        private Context context;
+        private String truckIDString;
+
+
+        public SynTruckLicense(Context context, String truckIDString) {
+            this.context = context;
+            this.truckIDString = truckIDString;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                RequestBody requestBody = new FormEncodingBuilder().add("isAdd", "true").add("TruckId", truckIDString).build();
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.url(myConstant.getUrlTruckLicense()).post(requestBody).build();
+                Response response = okHttpClient.newCall(request).execute();
+
+                return response.body().string();
+            } catch (IOException e) {
+                Log.d("Tag", "e doInBack ==> " + e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Log.d("Tag", "JSON ==> " + s);
+        }
+    }
 
 
     private class SynDataWhereByDriverID extends AsyncTask<String, Void, String> {
@@ -126,6 +165,7 @@ public class ServiceActivity extends AppCompatActivity {
                 planDateStrings = new String[jsonArray.length()];
                 cnt_storeStrings = new String[jsonArray.length()];
                 planIdStrings = new String[jsonArray.length()];
+                truckIdStrings = new String[jsonArray.length()];
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -133,6 +173,7 @@ public class ServiceActivity extends AppCompatActivity {
                     planDateStrings[i] = jsonObject.getString("planDate");
                     cnt_storeStrings[i] = jsonObject.getString("cnt_store");
                     planIdStrings[i] = jsonObject.getString("planId");
+                    truckIdStrings[i] = jsonObject.getString("truck_no");
 
                 }   // for
 
@@ -140,7 +181,7 @@ public class ServiceActivity extends AppCompatActivity {
 
                     //True Not Click on Button
                     jobListButton.setText("Job List = " + planDateStrings[0]);
-
+                    truckString = truckIdStrings[0];
                     createDetailList(planIdStrings[0]);
 
                 } else {
@@ -160,6 +201,7 @@ public class ServiceActivity extends AppCompatActivity {
                         intent.putExtra("Store", cnt_storeStrings);
                         intent.putExtra("Login", loginStrings);
                         intent.putExtra("PlanId", planIdStrings);
+                        intent.putExtra("TruckId", truckIdStrings);
                         startActivity(intent);
                         finish();
 
