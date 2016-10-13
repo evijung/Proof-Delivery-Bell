@@ -19,6 +19,11 @@ public class MyConstant {
     private String urlDataWhereDriverID = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlan.php";
     private String urlDataWhereDriverIDanDate = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlanDtl.php";
     private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
+    private String urlContainerList = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl_Listview.php";
+
+    public String getUrlContainerList() {
+        return urlContainerList;
+    }
 
     public String getUrlDetailWherePlanId() {
         return urlDetailWherePlanId;
