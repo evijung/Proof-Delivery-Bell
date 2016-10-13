@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                         aBoolean = !aBoolean;
                         for (int i1 = 0; i1 < logingStrings.length; i1++) {
                             logingStrings[i1] = jsonObject.getString(columLoginStrings[i1]);
+
                             Log.d("11octV2", "LoginString(" + i1 + ")=" + logingStrings[i1]);
                             truePasswordString = jsonObject.getString("drv_password");
 
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
                     } //end if
 
-                }   // end for  i
+                }   // end for i
 
                 if (aBoolean) {
                     MyAlert myAlert = new MyAlert(context);

@@ -312,6 +312,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             case R.id.button8: //Signature
                 break;
             case R.id.button9: //Confirm
+
                 break;
             case R.id.button10:
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -333,6 +334,14 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
         }//switch
     }// onClick
+
+    private class SynUploadImage extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+    }
 
 
     private class SynData extends AsyncTask<String, Void, String> {

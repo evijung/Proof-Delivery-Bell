@@ -98,6 +98,8 @@ public class ServiceActivity extends AppCompatActivity {
             try {
 
                 OkHttpClient okHttpClient = new OkHttpClient();
+
+                Log.d("Tag1", "Login ==> " + loginStrings[0]);
                 RequestBody requestBody = new FormEncodingBuilder()
                         .add("isAdd", "true")
                         .add("driver_id", loginStrings[0])
@@ -144,7 +146,6 @@ public class ServiceActivity extends AppCompatActivity {
                     //True Not Click on Button
                     jobListButton.setText("Job List : " + planDateStrings[0]);
                     idDriverTextView.setText(truckIdStrings[0]);
-                    Log.d("Tag", "Plan Id ==> " + planIdStrings[0]);
                     createDetailList(planIdStrings[0]);
 
 
@@ -212,6 +213,7 @@ public class ServiceActivity extends AppCompatActivity {
             try {
 
                 OkHttpClient okHttpClient = new OkHttpClient();
+                Log.d("Tag2", "Login ==> " + loginStrings[0] + ", PlanId ==> " + planIdString);
                 RequestBody requestBody = new FormEncodingBuilder()
                         .add("isAdd", "true")
                         .add("planId", planIdString)
