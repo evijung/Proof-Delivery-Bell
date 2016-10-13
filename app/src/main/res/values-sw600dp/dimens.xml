@@ -8,5 +8,7 @@
     <dimen name="block">700dp</dimen>
     <dimen name="padding">30dp</dimen>
     <dimen name="logo_width">350dp</dimen>
+    <dimen name="picture_width">75dp</dimen>
+    <dimen name="picture_height">125dp</dimen>
 
 </resources>

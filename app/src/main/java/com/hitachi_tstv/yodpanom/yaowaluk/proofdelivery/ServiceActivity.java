@@ -144,7 +144,9 @@ public class ServiceActivity extends AppCompatActivity {
                     //True Not Click on Button
                     jobListButton.setText("Job List : " + planDateStrings[0]);
                     idDriverTextView.setText(truckIdStrings[0]);
+                    Log.d("Tag", "Plan Id ==> " + planIdStrings[0]);
                     createDetailList(planIdStrings[0]);
+
 
                 } else {
                     // From Job List View

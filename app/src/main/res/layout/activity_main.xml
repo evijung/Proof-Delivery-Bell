@@ -32,13 +32,12 @@
             android:text="@string/sign_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView"
             android:textSize="@dimen/h1"
             android:textStyle="bold"
-            android:layout_margin="@dimen/margin" />
+            android:layout_margin="@dimen/margin"
+            android:id="@+id/textView" />
 
         <TextView
-            android:text="TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView2"

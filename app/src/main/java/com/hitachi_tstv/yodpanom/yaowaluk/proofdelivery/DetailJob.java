@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -44,10 +45,10 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
     private TextView jobNoTextView, storeCodeTextView, storeNameTextView, arrivalTextView, intentToCallTextView;
     private ListView listView;
     private ImageView firstImageView, secondImageView, thirdImageView;
-    private Button arrivalButton, takeImgButton, confirmButton, signatureButton;
+    private Button arrivalButton, takeImgButton, confirmButton, signatureButton, contractButton;
     private MyConstant myConstant = new MyConstant();
     private String[] loginStrings, containerStrings, quantityStrings;
-    private String planDtl2_Id, pathFirstImageString, pathSecondImageString, pathThirdImageString,driverUserNameString,getTimeDate;
+    private String planDtl2_Id, pathFirstImageString, pathSecondImageString, pathThirdImageString, driverUserNameString, getTimeDate;
     private LocationManager locationManager;
     private Criteria criteria;
 
@@ -84,8 +85,19 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         takeImgButton.setOnClickListener(DetailJob.this);
         confirmButton.setOnClickListener(DetailJob.this);
         signatureButton.setOnClickListener(DetailJob.this);
+        contractButton.setOnClickListener(DetailJob.this);
 
     }//Main Method
+
+    private Bitmap rotateBitmap(Bitmap src) {
+
+        // create new matrix
+        Matrix matrix = new Matrix();
+        // setup rotation degree
+        matrix.postRotate(90);
+        Bitmap bmp = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
+        return bmp;
+    }
 
     private class SynContainList extends AsyncTask<String, Void, String> {
         //Explicit
@@ -158,6 +170,9 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                     Bitmap bitmap = null;
                     try {
                         bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        if (bitmap.getHeight() < bitmap.getWidth()) {
+                            bitmap = rotateBitmap(bitmap);
+                        }
                         firstImageView.setImageBitmap(bitmap);
 
                     } catch (FileNotFoundException e) {
@@ -170,8 +185,51 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                 }
                 break;
             case 2:
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    pathSecondImageString = myFindPathImage(uri);
+                    Log.d("12octV5", "Path Second ==> " + pathSecondImageString);
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        if (bitmap.getHeight() < bitmap.getWidth()) {
+                            bitmap = rotateBitmap(bitmap);
+                        }
+                        Log.d("Tag", "Height ==> " + bitmap.getHeight() + " , Width ==> " + bitmap.getWidth());
+
+
+                        secondImageView.setImageBitmap(bitmap);
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
+
+                    // firstImageView.setImageURI(uri);
+                }
                 break;
             case 3:
+                if (resultCode == RESULT_OK) {
+                    Uri uri = data.getData();
+                    pathThirdImageString = myFindPathImage(uri);
+                    Log.d("12octV5", "Path Third ==> " + pathThirdImageString);
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        if (bitmap.getHeight() < bitmap.getWidth()) {
+                            bitmap = rotateBitmap(bitmap);
+                        }
+                        thirdImageView.setImageBitmap(bitmap);
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
+
+                    // firstImageView.setImageURI(uri);
+                }
                 break;
 
         }
@@ -205,8 +263,18 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
                 break;
             case R.id.imageView4: //Second
+
+                Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
+                intent2.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent2, "Please Choose Photo"), 2);
+
                 break;
             case R.id.imageView3: //Third
+
+                Intent intent3 = new Intent(Intent.ACTION_GET_CONTENT);
+                intent3.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent3, "Please Choose Photo"), 3);
+
                 break;
             case R.id.button6: //Take Image
 
@@ -231,25 +299,40 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                 }
 
 
-
-
-                if(strLat.equals("Unknown") && strLng.equals("Unknown")){
-                    Toast.makeText(this,"Failure Lat/Lng is Unknown",Toast.LENGTH_SHORT).show();
-                }else{
+                if (strLat.equals("Unknown") && strLng.equals("Unknown")) {
+                    Toast.makeText(this, "Failure Lat/Lng is Unknown", Toast.LENGTH_SHORT).show();
+                } else {
                     Log.d("13OctV1", " ++++++++++Latitude.-> " + strLat + " Longitude.-> " + strLng);
                     SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
                     synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
 
-                    Toast.makeText(this,"Update To Server success",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Update To Server success", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.button8: //Signature
                 break;
             case R.id.button9: //Confirm
                 break;
+            case R.id.button10:
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:0843524145"));
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                startActivity(callIntent);
+
+
+                break;
+
         }//switch
     }// onClick
-
 
 
     private class SynData extends AsyncTask<String, Void, String> {
@@ -317,6 +400,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         takeImgButton = (Button) findViewById(R.id.button6);
         confirmButton = (Button) findViewById(R.id.button9);
         signatureButton = (Button) findViewById(R.id.button8);
+        contractButton = (Button) findViewById(R.id.button10);
     }
 
     private class SynGPStoServer extends AsyncTask<String, Void, String> {
@@ -333,22 +417,21 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             try {
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormEncodingBuilder()
-                        .add("isAdd","true")
-                        .add("Lat",params[1])
-                        .add("Lng",params[2])
-                        .add("stamp",params[3])
-                        .add("drv_username",params[4])
-                        .add("planDtl2_id",params[5])
+                        .add("isAdd", "true")
+                        .add("Lat", params[1])
+                        .add("Lng", params[2])
+                        .add("stamp", params[3])
+                        .add("drv_username", params[4])
+                        .add("planDtl2_id", params[5])
                         .build();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(params[0]).post(requestBody).build();
                 Response response = okHttpClient.newCall(request).execute();
-                return  response.body().string();
+                return response.body().string();
             } catch (Exception e) {
                 Log.d("13OctV1", "doInBackSynGPS--->" + e.toString());
                 return null;
             }
-
 
 
         }
@@ -358,9 +441,9 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             super.onPostExecute(s);
 
             Log.d("13OctV1", "JSON__GPS->" + s);
-            if(s.equals("SUCCESS")){
+            if (s.equals("SUCCESS")) {
 
-            }else{
+            } else {
 
             }
 
