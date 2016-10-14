@@ -1,6 +1,7 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -380,10 +381,21 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         private Bitmap bitmap;
         private UploadImageUtils uploadImageUtils;
         private String mUploadedFileName;
+        private ProgressDialog progressDialog;
 
         public SynUploadImage(Context context, Bitmap bitmap) {
             this.context = context;
             this.bitmap = bitmap;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("Waiting...");
+            progressDialog.show();
         }
 
         @Override
@@ -399,8 +411,25 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            progressDialog.dismiss();
 
             Log.d("TAG", "JSON_Upload ==> " + s);
+            if (s.equals("OK")) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Add Image Successful!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Add Image Unsuccessful!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
         }
     }

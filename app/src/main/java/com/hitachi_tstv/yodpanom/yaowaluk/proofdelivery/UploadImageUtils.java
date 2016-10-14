@@ -55,7 +55,7 @@ public class UploadImageUtils {
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
             byte[] data = baos.toByteArray();
 
             Log.d("Bitmap", "Bitmap ==> " + bitmap);
