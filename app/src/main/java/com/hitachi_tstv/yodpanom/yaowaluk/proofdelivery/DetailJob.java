@@ -51,6 +51,9 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
     private String planDtl2_Id, pathFirstImageString, pathSecondImageString, pathThirdImageString, driverUserNameString, getTimeDate;
     private LocationManager locationManager;
     private Criteria criteria;
+    private Bitmap firstBitmap = null;
+    private Bitmap secondBitmap = null;
+    private Bitmap thirdBitmap = null;
 
 
     @Override
@@ -167,13 +170,12 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                     Uri uri = data.getData();
                     pathFirstImageString = myFindPathImage(uri);
                     Log.d("12octV5", "Path First ==> " + pathFirstImageString);
-                    Bitmap bitmap = null;
                     try {
-                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                        if (bitmap.getHeight() < bitmap.getWidth()) {
-                            bitmap = rotateBitmap(bitmap);
+                        firstBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        if (firstBitmap.getHeight() < firstBitmap.getWidth()) {
+                            firstBitmap = rotateBitmap(firstBitmap);
                         }
-                        firstImageView.setImageBitmap(bitmap);
+                        firstImageView.setImageBitmap(firstBitmap);
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -189,16 +191,15 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                     Uri uri = data.getData();
                     pathSecondImageString = myFindPathImage(uri);
                     Log.d("12octV5", "Path Second ==> " + pathSecondImageString);
-                    Bitmap bitmap = null;
                     try {
-                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                        if (bitmap.getHeight() < bitmap.getWidth()) {
-                            bitmap = rotateBitmap(bitmap);
+                        secondBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        if (secondBitmap.getHeight() < secondBitmap.getWidth()) {
+                            secondBitmap = rotateBitmap(secondBitmap);
                         }
-                        Log.d("Tag", "Height ==> " + bitmap.getHeight() + " , Width ==> " + bitmap.getWidth());
+                        Log.d("Tag", "Height ==> " + secondBitmap.getHeight() + " , Width ==> " + secondBitmap.getWidth());
 
 
-                        secondImageView.setImageBitmap(bitmap);
+                        secondImageView.setImageBitmap(secondBitmap);
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -214,13 +215,13 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                     Uri uri = data.getData();
                     pathThirdImageString = myFindPathImage(uri);
                     Log.d("12octV5", "Path Third ==> " + pathThirdImageString);
-                    Bitmap bitmap = null;
+
                     try {
-                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-                        if (bitmap.getHeight() < bitmap.getWidth()) {
-                            bitmap = rotateBitmap(bitmap);
+                        thirdBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        if (thirdBitmap.getHeight() < thirdBitmap.getWidth()) {
+                            thirdBitmap = rotateBitmap(thirdBitmap);
                         }
-                        thirdImageView.setImageBitmap(bitmap);
+                        thirdImageView.setImageBitmap(thirdBitmap);
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
@@ -240,16 +241,19 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         String result = null;
         String[] strings = {MediaStore.Images.Media.DATA};
         Cursor cursor = getContentResolver().query(uri, strings, null, null, null);
-
         if (cursor != null) {
             cursor.moveToFirst();
-            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
             result = cursor.getString(index);
+            cursor.close();
         } else {
             result = uri.getPath();
         }
+        Log.d("Tag", "Result ==> " + result + ", URI ==> " + uri);
+        Log.d("Tag", "Cursor ==> " + cursor.toString());
 
         return result;
+
     }
 
     @Override
@@ -306,12 +310,27 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                     SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
                     synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
 
-                    Toast.makeText(this, "Update To Server success", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.button8: //Signature
                 break;
             case R.id.button9: //Confirm
+                Log.d("Tag1", "First ==> " + pathFirstImageString);
+                Log.d("Tag2", "Second ==> " +pathSecondImageString);
+                Log.d("Tag3", "Third ==> " +pathThirdImageString);
+                if (pathFirstImageString != null) {
+                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, firstBitmap);
+                    synUploadImage.execute();
+                }
+                if (pathSecondImageString != null) {
+                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, secondBitmap);
+                    synUploadImage.execute();
+                }
+                if (pathThirdImageString != null) {
+                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, thirdBitmap);
+                    synUploadImage.execute();
+                }
+
 
                 break;
             case R.id.button10:
@@ -335,11 +354,34 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         }//switch
     }// onClick
 
-    private class SynUploadImage extends AsyncTask<Void, Void, Void> {
+    private class SynUploadImage extends AsyncTask<Void, Void, String> {
+        //Explicit
+        private Context context;
+        private Bitmap bitmap;
+        private UploadImageUtils uploadImageUtils;
+        private String mUploadedFileName;
+
+        public SynUploadImage(Context context, Bitmap bitmap) {
+            this.context = context;
+            this.bitmap = bitmap;
+        }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            return null;
+        protected String doInBackground(Void... voids) {
+            uploadImageUtils = new UploadImageUtils();
+            mUploadedFileName = uploadImageUtils.getRandomFileName();
+            final String result = uploadImageUtils.uploadFile(mUploadedFileName, myConstant.getUrlSaveImage(), bitmap);
+            Log.d("TAG", "Do in back after save:-->" + result);
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Log.d("TAG", "JSON_Upload ==> " + s);
+
         }
     }
 
@@ -451,9 +493,19 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
             Log.d("13OctV1", "JSON__GPS->" + s);
             if (s.equals("SUCCESS")) {
-
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Update GPS To Server Successful!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             } else {
-
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Update GPS To Server Unsuccessful!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
         }   //onPostExcute
