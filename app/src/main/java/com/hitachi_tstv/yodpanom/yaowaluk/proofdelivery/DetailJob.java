@@ -14,7 +14,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -155,6 +158,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -237,18 +241,34 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String myFindPathImage(Uri uri) {
+
+        String wholeId = DocumentsContract.getDocumentId(uri);
+        String id = wholeId.split(":")[1];
+
         String result = null;
         String[] strings = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(uri, strings, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(index);
-            cursor.close();
-        } else {
-            result = uri.getPath();
+
+        String sel = MediaStore.Images.Media._ID + "=?";
+
+        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                strings, sel, new String[]{ id }, null);
+
+        int columnIndex = cursor.getColumnIndex(strings[0]);
+        if (cursor.moveToFirst()) {
+            result = cursor.getString(columnIndex);
         }
+        cursor.close();
+//        if (cursor != null) {
+//            cursor.moveToFirst();
+//            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
+//            result = cursor.getString(index);
+//            cursor.close();
+//        } else {
+//            result = uri.getPath();
+//        }
+
         Log.d("Tag", "Result ==> " + result + ", URI ==> " + uri);
         Log.d("Tag", "Cursor ==> " + cursor.toString());
 

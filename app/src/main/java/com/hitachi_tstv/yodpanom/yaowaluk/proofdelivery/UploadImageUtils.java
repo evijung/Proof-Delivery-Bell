@@ -78,6 +78,8 @@ public class UploadImageUtils {
             outputStream.flush();
             outputStream.close();
 
+            Log.d("Tag", "Return ==> " + sb.toString());
+
             return sb.toString();
 
         } catch (Exception e) {
