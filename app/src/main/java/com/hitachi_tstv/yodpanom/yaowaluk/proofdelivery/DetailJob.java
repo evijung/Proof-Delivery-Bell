@@ -334,6 +334,8 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                 }
                 break;
             case R.id.button8: //Signature
+                Intent intentSign = new Intent(DetailJob.this, SignatureActivity.class);
+                startActivity(intentSign);
                 break;
             case R.id.button9: //Confirm
                 Log.d("Tag1", "First ==> " + pathFirstImageString);

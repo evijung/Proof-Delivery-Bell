@@ -23,6 +23,7 @@ public class MyConstant {
     private String urlArrivalGPS = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateArrivalFromDriver.php";
     private String urlSaveImage = "http://service.eternity.co.th/TrackingInOut/upload.php";
 
+
     public String getUrlSaveImage() {
         return urlSaveImage;
     }
