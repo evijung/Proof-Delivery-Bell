@@ -16,4 +16,5 @@
     <dimen name="icon_size">52dp</dimen>
     <dimen name="picture_width">57dp</dimen>
     <dimen name="picture_height">94dp</dimen>
+    <dimen name="button_height">34dp</dimen>
 </resources>

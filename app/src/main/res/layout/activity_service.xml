@@ -9,14 +9,16 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery.ServiceActivity">
+    tools:context="com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery.ServiceActivity"
+    android:background="@drawable/wallpapers_b_05">
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/listJob"
         android:layout_below="@+id/linTopService"
-        android:layout_above="@+id/button2" />
+        android:layout_above="@+id/button2"
+        android:background="@color/layout_bg2" />
 
     <Button
         android:text="@string/close"
@@ -34,7 +36,9 @@
         android:layout_marginTop="16dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/linTopService">
+        android:id="@+id/linTopService"
+        android:background="@color/layout_bg2"
+        android:layout_marginBottom="@dimen/mini_margin">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -44,7 +48,7 @@
 
             <ImageView
                 android:layout_width="0dp"
-                app:srcCompat="@drawable/doremon48"
+                app:srcCompat="@drawable/male"
                 android:id="@+id/imageView"
                 android:layout_weight="1"
                 android:layout_height="@dimen/icon_size" />
@@ -108,7 +112,7 @@
         </LinearLayout>
 
         <Button
-            android:text="Button"
+            android:text="Date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/button3"

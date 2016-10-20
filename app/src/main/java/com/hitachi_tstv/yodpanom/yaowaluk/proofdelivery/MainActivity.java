@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +32,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        int version = Build.VERSION.SDK_INT;
+        String versionRelease = Build.VERSION.RELEASE;
+
+        Log.e("MyActivity", "manufacturer " + manufacturer
+                + " \n model " + model
+                + " \n version " + version
+                + " \n versionRelease " + versionRelease
+        );
 
         // Bind Widget
         userEditText = (EditText) findViewById(R.id.editText);
@@ -76,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
         private Context context;
         private boolean aBoolean = true;//User false
-        private String[] logingStrings = new String[3]; //for User success login
+        private String[] logingStrings = new String[4]; //for User success login
         private String[] columLoginStrings;
         private String truePasswordString;
         private ProgressDialog progressDialog;

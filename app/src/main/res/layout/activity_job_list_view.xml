@@ -8,10 +8,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery.JobListView">
+    tools:context="com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery.JobListView"
+    android:background="@drawable/wallpapers_b_05">
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/livShowDate" />
+        android:id="@+id/livShowDate"
+        android:background="@color/layout_bg2" />
 </RelativeLayout>

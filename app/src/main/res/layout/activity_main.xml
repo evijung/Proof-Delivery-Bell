@@ -9,7 +9,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery.MainActivity">
+    tools:context="com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery.MainActivity"
+    android:background="@drawable/wallpapers_b_05">
 
     <LinearLayout
         android:orientation="vertical"
@@ -19,7 +20,8 @@
         android:layout_centerHorizontal="true"
         android:padding="@dimen/padding"
         android:layout_marginTop="@dimen/padding"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="#64ffffff">
 
         <ImageView
             android:layout_height="wrap_content"
@@ -36,13 +38,6 @@
             android:textStyle="bold"
             android:layout_margin="@dimen/margin"
             android:id="@+id/textView" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView2"
-            android:layout_margin="@dimen/margin"
-            android:textSize="@dimen/h3" />
 
         <EditText
             android:layout_width="match_parent"

@@ -49,7 +49,7 @@ public class ContainerListAdapter extends BaseAdapter {
 
         containerTextView.setText(containerStrings[i]);
         quantityTextView.setText(quantityStrings[i]);
-        idTextView.setText(String.valueOf(i));
+        idTextView.setText(String.valueOf(i+1));
 
         return view1;
     }

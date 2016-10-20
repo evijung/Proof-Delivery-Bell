@@ -58,6 +58,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
     private Bitmap firstBitmap = null;
     private Bitmap secondBitmap = null;
     private Bitmap thirdBitmap = null;
+    private int version;
 
 
     @Override
@@ -65,9 +66,13 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_job);
 
+
+        version = Build.VERSION.SDK_INT;
+
         //bind Widget
         bindWidget();
 
+        confirmButton.setVisibility(View.INVISIBLE);
         //Get Intent Data
         loginStrings = getIntent().getStringArrayExtra("Login");
         planDtl2_Id = getIntent().getStringExtra("planDtl2_id");
@@ -159,7 +164,6 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -173,7 +177,13 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             case 1://From Select Image First
                 if (resultCode == RESULT_OK) {
                     Uri uri = data.getData();
-                    pathFirstImageString = myFindPathImage(uri);
+                    if (version >= Build.VERSION_CODES.KITKAT) {
+
+                        pathFirstImageString = myFindPathImageOverKitkat(uri);
+                    } else {
+
+                        pathFirstImageString = myFindPathImage(uri);
+                    }
                     Log.d("12octV5", "Path First ==> " + pathFirstImageString);
                     try {
                         firstBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
@@ -194,7 +204,13 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             case 2:
                 if (resultCode == RESULT_OK) {
                     Uri uri = data.getData();
-                    pathSecondImageString = myFindPathImage(uri);
+                    if (version >= Build.VERSION_CODES.KITKAT) {
+
+                        pathSecondImageString = myFindPathImageOverKitkat(uri);
+                    } else {
+
+                        pathSecondImageString = myFindPathImage(uri);
+                    }
                     Log.d("12octV5", "Path Second ==> " + pathSecondImageString);
                     try {
                         secondBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
@@ -218,7 +234,13 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             case 3:
                 if (resultCode == RESULT_OK) {
                     Uri uri = data.getData();
-                    pathThirdImageString = myFindPathImage(uri);
+                    if (version >= Build.VERSION_CODES.KITKAT) {
+
+                        pathThirdImageString = myFindPathImageOverKitkat(uri);
+                    } else {
+
+                        pathThirdImageString = myFindPathImage(uri);
+                    }
                     Log.d("12octV5", "Path Third ==> " + pathThirdImageString);
 
                     try {
@@ -242,10 +264,33 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String myFindPathImage(Uri uri) {
+        String result = null;
+        String[] strings = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri,
+                strings, null, null, null);
 
-        String wholeId = DocumentsContract.getDocumentId(uri);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(index);
+            cursor.close();
+        } else {
+            result = uri.getPath();
+        }
+
+        cursor.close();
+        return result;
+
+    }
+
+
+    private String myFindPathImageOverKitkat(Uri uri) {
+
+        String wholeId = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            wholeId = DocumentsContract.getDocumentId(uri);
+        }
         String id = wholeId.split(":")[1];
 
         String result = null;
@@ -254,7 +299,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         String sel = MediaStore.Images.Media._ID + "=?";
 
         Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                strings, sel, new String[]{ id }, null);
+                strings, sel, new String[]{id}, null);
 
         int columnIndex = cursor.getColumnIndex(strings[0]);
         if (cursor.moveToFirst()) {
@@ -335,12 +380,14 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                 break;
             case R.id.button8: //Signature
                 Intent intentSign = new Intent(DetailJob.this, SignatureActivity.class);
+                intentSign.putExtra("Login", loginStrings);
+                intentSign.putExtra("PlanDtl", planDtl2_Id);
                 startActivity(intentSign);
                 break;
             case R.id.button9: //Confirm
                 Log.d("Tag1", "First ==> " + pathFirstImageString);
-                Log.d("Tag2", "Second ==> " +pathSecondImageString);
-                Log.d("Tag3", "Third ==> " +pathThirdImageString);
+                Log.d("Tag2", "Second ==> " + pathSecondImageString);
+                Log.d("Tag3", "Third ==> " + pathThirdImageString);
                 if (pathFirstImageString != null) {
                     SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, firstBitmap);
                     synUploadImage.execute();
@@ -356,7 +403,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
 
                 break;
-            case R.id.button10:
+            case R.id.button10: //Call
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 callIntent.setData(Uri.parse("tel:0843524145"));
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -404,10 +451,29 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         protected String doInBackground(Void... voids) {
             uploadImageUtils = new UploadImageUtils();
             mUploadedFileName = uploadImageUtils.getRandomFileName();
-            final String result = uploadImageUtils.uploadFile(mUploadedFileName, myConstant.getUrlSaveImage(), bitmap);
+            final String result = uploadImageUtils.uploadFile(mUploadedFileName, myConstant.getUrlSaveImage(), bitmap, planDtl2_Id,"P");
             Log.d("TAG", "Do in back after save:-->" + result);
+            if (result == "NOK") {
+                return "NOK1";
+            } else {
+                try {
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    RequestBody requestBody = new FormEncodingBuilder()
+                            .add("isAdd", "true")
+                            .add("PlanDtl2_ID", planDtl2_Id)
+                            .add("File_Name", mUploadedFileName)
+                            .add("File_Path", result)
+                            .add("Driver_Name", loginStrings[2])
+                            .build();
+                    Request.Builder builder = new Request.Builder();
+                    Request request = builder.url(myConstant.getUrlSaveImagePath()).post(requestBody).build();
+                    Response response = okHttpClient.newCall(request).execute();
 
-            return result;
+                    return response.body().string();
+                } catch (Exception e) {
+                    return "NOK2";
+                }
+            }
         }
 
         @Override
@@ -416,6 +482,8 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             progressDialog.dismiss();
 
             Log.d("TAG", "JSON_Upload ==> " + s);
+            boolean b = (s.equals("OK"));
+            Log.d("Tag", "Bool ==> " + b);
             if (s.equals("OK")) {
                 runOnUiThread(new Runnable() {
                     @Override
@@ -433,6 +501,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                 });
             }
 
+            finish();
         }
     }
 
@@ -478,7 +547,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                 storeCodeTextView.setText("Store Code : " + jsonObject.getString("store_code"));
                 storeNameTextView.setText("Store Name : " + jsonObject.getString("store_nameEng"));
                 arrivalTextView.setText("Arrival : " + jsonObject.getString("plan_arrivalDateTime"));
-                intentToCallTextView.setText("Call : " + jsonObject.getString("store_tel"));
+                intentToCallTextView.setText(jsonObject.getString("store_tel"));
             } catch (Exception e) {
                 Log.d("12octV4", "e onPost ==> " + e);
             }
@@ -543,7 +612,9 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             super.onPostExecute(s);
 
             Log.d("13OctV1", "JSON__GPS->" + s);
-            if (s.equals("SUCCESS")) {
+            if (s.equals("Success")) {
+                confirmButton.setVisibility(View.VISIBLE);
+                arrivalButton.setVisibility(View.INVISIBLE);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

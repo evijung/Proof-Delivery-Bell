@@ -2,7 +2,7 @@
     <string name="app_name">Proof Delivery</string>
 
     <string name="sign_in">Sign In</string>
-    <string name="user">User</string>
+    <string name="user">Username</string>
     <string name="password">Password</string>
     <string name="close">Close</string>
     <string name="driver_name">Name</string>

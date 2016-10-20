@@ -3,12 +3,14 @@ package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,6 +32,7 @@ public class ServiceActivity extends AppCompatActivity {
     private Button jobListButton, closeButton;
     private ListView listView;
     private String[] loginStrings;
+    private ImageView iconImageView;
     private MyConstant myConstant = new MyConstant();
     private String[] planDateStrings, cnt_storeStrings, planIdStrings;
     private boolean aBoolean = true;
@@ -49,12 +52,17 @@ public class ServiceActivity extends AppCompatActivity {
         jobListButton = (Button) findViewById(R.id.button3);
         closeButton = (Button) findViewById(R.id.button2);
         listView = (ListView) findViewById(R.id.listJob);
+        iconImageView = (ImageView) findViewById(R.id.imageView);
 
         //Get Value from Intent
         loginStrings = getIntent().getStringArrayExtra("Login");
         driverChooseString = getIntent().getStringExtra("PlanId");
         dateChooseString = getIntent().getStringExtra("Date");
         truckString = getIntent().getStringExtra("TruckNo");
+        if (loginStrings[3].equals("F")) {
+            Log.d("Tag", "Gender ==> " + loginStrings[3]);
+            iconImageView.setImageResource(R.drawable.female);
+        }
 
         if (driverChooseString.length() != 0) {
             aBoolean = false;
@@ -69,8 +77,6 @@ public class ServiceActivity extends AppCompatActivity {
         //Syn data
         SynDataWhereByDriverID synDataWhereByDriverID = new SynDataWhereByDriverID(ServiceActivity.this);
         synDataWhereByDriverID.execute(myConstant.getUrlDataWhereDriverID());
-
-
 
         //Close Controller
         closeButton.setOnClickListener(new View.OnClickListener() {

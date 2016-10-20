@@ -15,7 +15,7 @@ import java.util.Random;
  * Created by musz on 8/22/2016.
  */
 public class UploadImageUtils {
-    public static String uploadFile(String fileNameInServer, String urlServer, Bitmap bitmap) {
+    public static String uploadFile(String fileNameInServer, String urlServer, Bitmap bitmap, String plan_id, String option) {
         try {
 
             // configurable parameters
@@ -31,7 +31,9 @@ public class UploadImageUtils {
             String twoHyphens = "--";
             String boundary = "*****";
 
-            URL url = new URL(urlServer);
+            URL url = new URL(urlServer + "?plan=" + plan_id + "&op=" + option + "&");
+
+            Log.d("Tag URL", "URL ===> " + url);
             connection = (HttpURLConnection) url.openConnection();
 
             // Allow Inputs & Outputs

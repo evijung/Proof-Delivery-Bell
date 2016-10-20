@@ -36,18 +36,26 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
 public class SignatureActivity extends AppCompatActivity {
     //Explicit
     LinearLayout mContent;
     signature mSignature;
-    Button mClear, mGetSign, mCancel;
+    Button mClear, mGetSign;
     public static String tempDir;
-    public int count = 1;
     public String current = null;
-    private Bitmap mBitmap, saveBitmap;
+    private Bitmap mBitmap;
     View mView;
     File mypath;
     MyConstant myConstant;
+    private String[] loginStrings;
+    private String plan_id, sign_name;
+
 
     private String uniqueId;
     private EditText yourName;
@@ -57,14 +65,19 @@ public class SignatureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signature);
 
-        tempDir = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.external_dir) + "/";
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir(getResources().getString(R.string.external_dir), Context.MODE_PRIVATE);
+//        tempDir = Environment.getExternalStorageDirectory() + "/" + getResources().getString(R.string.external_dir) + "/";
+//        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+//        File directory = cw.getDir(getResources().getString(R.string.external_dir), Context.MODE_PRIVATE);
+//
+//        prepareDirectory();
+//        uniqueId = getTodaysDate() + "_" + getCurrentTime() + "_" + Math.random();
+//        current = uniqueId + ".png";
+//        mypath = new File(directory, current);
 
-        prepareDirectory();
-        uniqueId = getTodaysDate() + "_" + getCurrentTime() + "_" + Math.random();
-        current = uniqueId + ".png";
-        mypath = new File(directory, current);
+        plan_id = getIntent().getStringExtra("PlanDtl");
+        loginStrings = getIntent().getStringArrayExtra("Login");
+        myConstant = new MyConstant();
+
 
 
         mContent = (LinearLayout) findViewById(R.id.linSign);
@@ -184,13 +197,15 @@ public class SignatureActivity extends AppCompatActivity {
         private Bitmap bitmap;
         private UploadImageUtils uploadImageUtils;
         private String mUploadedFileName;
+        private String signNameString;
 //        private ProgressDialog progressDialog;
 
-        public SynUploadImage(Context context, Bitmap bitmap) {
+
+        public SynUploadImage(Context context, Bitmap bitmap, String signNameString) {
             this.context = context;
             this.bitmap = bitmap;
+            this.signNameString = signNameString;
         }
-
 
         @Override
         protected void onPreExecute() {
@@ -205,10 +220,37 @@ public class SignatureActivity extends AppCompatActivity {
         protected String doInBackground(Void... voids) {
             uploadImageUtils = new UploadImageUtils();
             mUploadedFileName = uploadImageUtils.getRandomFileName();
-            final String result = uploadImageUtils.uploadFile(mUploadedFileName, "http://service.eternity.co.th/TrackingInOut/upload.php", bitmap);
+
+            Log.d("Data", mUploadedFileName);
+            Log.d("Data", plan_id);
+            Log.d("Data", bitmap.toString());
+            Log.d("Data", myConstant.getUrlSaveImage());
+            final String result = uploadImageUtils.uploadFile(mUploadedFileName, myConstant.getUrlSaveImage(), bitmap, plan_id, "S");
             Log.d("TAG", "Do in back after save:-->" + result);
 
-            return result;
+            if (result == "NOK") {
+                return "NOK";
+            } else {
+                try {
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    RequestBody requestBody = new FormEncodingBuilder()
+                            .add("isAdd", "true")
+                            .add("PlanDtl2_ID", plan_id)
+                            .add("Sign_Name", signNameString)
+                            .add("File_Name", mUploadedFileName)
+                            .add("File_Path", result)
+                            .add("drv_username", loginStrings[2])
+                            .build();
+                    Request.Builder builder = new Request.Builder();
+                    Request request = builder.url(myConstant.getUrlSaveSignPath()).post(requestBody).build();
+                    Response response = okHttpClient.newCall(request).execute();
+
+                    return response.body().string();
+                } catch (Exception e) {
+                    return "NOK";
+                }
+            }
+
         }
 
         @Override
@@ -217,22 +259,22 @@ public class SignatureActivity extends AppCompatActivity {
 //            progressDialog.dismiss();
 
             Log.d("TAG", "JSON_Upload ==> " + s);
-//            if (s.equals("OK")) {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Toast.makeText(context, "Add Image Successful!!", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//
-//            } else {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Toast.makeText(context, "Add Image Unsuccessful!!", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
+            if (s.equals("OK")) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Add Signature Successful!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Add Signature Unsuccessful!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
         }
     }
@@ -262,6 +304,7 @@ public class SignatureActivity extends AppCompatActivity {
             if (mBitmap == null) {
                 mBitmap = Bitmap.createBitmap(mContent.getWidth(), mContent.getHeight(), Bitmap.Config.RGB_565);
 
+                sign_name = yourName.getText().toString();
 
                 Canvas canvas = new Canvas(mBitmap);
                 try {
@@ -271,7 +314,8 @@ public class SignatureActivity extends AppCompatActivity {
 //                    mBitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutStream);
                     //   String url = Images.Media.insertImage(getContentResolver(), mBitmap, "title", null);
                     Log.v("log_tag", "Bitmap=++++++++++++++: " + mBitmap);
-                    SynUploadImage synUploadImage = new SynUploadImage(SignatureActivity.this, mBitmap);
+
+                    SynUploadImage synUploadImage = new SynUploadImage(SignatureActivity.this, mBitmap, sign_name);
                     synUploadImage.execute();
                     //
 

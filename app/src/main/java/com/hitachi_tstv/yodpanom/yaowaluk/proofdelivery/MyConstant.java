@@ -6,12 +6,12 @@ package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 public class MyConstant {
     //Explicit
-    private int iconAnInt = R.drawable.doremon48;// Image for icon 48x48
+    private int iconAnInt = R.drawable.warning48; // Image for icon 48x48
     private String titleHaveSpaceString = "มีช่องว่าง";
     private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง ค่ะ!";
 
     private String urlUserString = "http://service.eternity.co.th/TmsPXD/app/CenterService/getUser.php";
-    private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username"};
+    private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username","gender"};
     private String titleUserFalesString = "User False";
     private String messageUserFalesString = "ไม่มี User นี้ในฐานข้อมูลของเรา";
     private String titlePasswordFalse = "Password ผิด";
@@ -21,8 +21,17 @@ public class MyConstant {
     private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
     private String urlContainerList = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl_Listview.php";
     private String urlArrivalGPS = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateArrivalFromDriver.php";
-    private String urlSaveImage = "http://service.eternity.co.th/TrackingInOut/upload.php";
+    private String urlSaveImage = "http://service.eternity.co.th/TmsPXD/app/CenterService/uploadPicture.php";
+    private String urlSaveImagePath = "http://service.eternity.co.th/TmsPXD/app/CenterService/setPicturePath.php";
+    private String urlSaveSignPath = "http://service.eternity.co.th/TmsPXD/app/CenterService/setSignPath.php";
 
+    public String getUrlSaveSignPath() {
+        return urlSaveSignPath;
+    }
+
+    public String getUrlSaveImagePath() {
+        return urlSaveImagePath;
+    }
 
     public String getUrlSaveImage() {
         return urlSaveImage;
