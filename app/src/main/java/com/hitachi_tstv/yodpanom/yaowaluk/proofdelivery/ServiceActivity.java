@@ -273,7 +273,7 @@ public class ServiceActivity extends AppCompatActivity {
                         intent.putExtra("Login", loginStrings);
                         intent.putExtra("planDtl2_id", planDtl2_idStrings[i]);
                         startActivity(intent);
-
+                        finish();
                     }
                 });
 

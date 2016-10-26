@@ -24,6 +24,11 @@ public class MyConstant {
     private String urlSaveImage = "http://service.eternity.co.th/TmsPXD/app/CenterService/uploadPicture.php";
     private String urlSaveImagePath = "http://service.eternity.co.th/TmsPXD/app/CenterService/setPicturePath.php";
     private String urlSaveSignPath = "http://service.eternity.co.th/TmsPXD/app/CenterService/setSignPath.php";
+    private String urlUpdateStatus = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateStatusConfirm.php";
+
+    public String getUrlUpdateStatus() {
+        return urlUpdateStatus;
+    }
 
     public String getUrlSaveSignPath() {
         return urlSaveSignPath;

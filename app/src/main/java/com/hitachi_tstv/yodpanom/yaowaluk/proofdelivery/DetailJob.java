@@ -401,11 +401,15 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                     synUploadImage.execute();
                 }
 
+                SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
+                synUpdateStatus.execute();
+
 
                 break;
             case R.id.button10: //Call
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:0843524145"));
+                String phoneNo = "tel:" + intentToCallTextView.getText().toString();
+                callIntent.setData(Uri.parse(phoneNo));
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -423,6 +427,69 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
         }//switch
     }// onClick
+
+    private class SynUpdateStatus extends AsyncTask<String, Void, String> {
+        //Explicit
+        private Context context;
+
+        public SynUpdateStatus(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Log.d("TAG", "JSON_Upload ==> " + s);
+            boolean b = (s.equals("OK"));
+            Log.d("Tag", "Bool ==> " + b);
+            if (s.equals("OK")) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Save Job Complete!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                Intent intent = new Intent(DetailJob.this,ServiceActivity.class);
+                intent.putExtra("Login", loginStrings);
+                intent.putExtra("Date", "");
+                intent.putExtra("PlanId", "");
+                intent.putExtra("TruckNo", "");
+                startActivity(intent);
+
+                finish();
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Save Job Incomplete!!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                RequestBody requestBody = new FormEncodingBuilder()
+                        .add("isAdd", "true")
+                        .add("PlanDtl2_ID", planDtl2_Id)
+                        .add("Driver_Name", loginStrings[2])
+                        .build();
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.url(myConstant.getUrlUpdateStatus()).post(requestBody).build();
+                Response response = okHttpClient.newCall(request).execute();
+
+                return response.body().string();
+            } catch (Exception e) {
+                return "NOK2";
+            }
+        }
+    }
+
 
     private class SynUploadImage extends AsyncTask<Void, Void, String> {
         //Explicit
@@ -501,7 +568,6 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                 });
             }
 
-            finish();
         }
     }
 
