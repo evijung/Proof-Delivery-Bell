@@ -23,6 +23,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -49,7 +50,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
     private TextView jobNoTextView, storeCodeTextView, storeNameTextView, arrivalTextView, intentToCallTextView;
     private ListView listView;
     private ImageView firstImageView, secondImageView, thirdImageView;
-    private Button arrivalButton, takeImgButton, confirmButton, signatureButton, contractButton;
+    private Button arrivalButton, takeImgButton, confirmButton, signatureButton, contractButton, backButton;
     private MyConstant myConstant = new MyConstant();
     private String[] loginStrings, containerStrings, quantityStrings;
     private String planDtl2_Id, pathFirstImageString, pathSecondImageString, pathThirdImageString, driverUserNameString, getTimeDate;
@@ -72,7 +73,11 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         //bind Widget
         bindWidget();
 
+        //Set Invisible The Button
         confirmButton.setVisibility(View.INVISIBLE);
+        signatureButton.setVisibility(View.INVISIBLE);
+        takeImgButton.setVisibility(View.INVISIBLE);
+
         //Get Intent Data
         loginStrings = getIntent().getStringArrayExtra("Login");
         planDtl2_Id = getIntent().getStringExtra("planDtl2_id");
@@ -98,6 +103,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         confirmButton.setOnClickListener(DetailJob.this);
         signatureButton.setOnClickListener(DetailJob.this);
         contractButton.setOnClickListener(DetailJob.this);
+        backButton.setOnClickListener(DetailJob.this);
 
     }//Main Method
 
@@ -109,6 +115,11 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         matrix.postRotate(90);
         Bitmap bmp = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
         return bmp;
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     private class SynContainList extends AsyncTask<String, Void, String> {
@@ -425,6 +436,14 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
                 break;
 
+            case R.id.button13: //Back
+                Intent backIntent = new Intent(DetailJob.this, ServiceActivity.class);
+                backIntent.putExtra("Login", loginStrings);
+                backIntent.putExtra("Date", "");
+                backIntent.putExtra("PlanId", "");
+                backIntent.putExtra("TruckNo", "");
+                startActivity(backIntent);
+                finish();
         }//switch
     }// onClick
 
@@ -451,7 +470,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                     }
                 });
 
-                Intent intent = new Intent(DetailJob.this,ServiceActivity.class);
+                Intent intent = new Intent(DetailJob.this, ServiceActivity.class);
                 intent.putExtra("Login", loginStrings);
                 intent.putExtra("Date", "");
                 intent.putExtra("PlanId", "");
@@ -518,13 +537,14 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         protected String doInBackground(Void... voids) {
             uploadImageUtils = new UploadImageUtils();
             mUploadedFileName = uploadImageUtils.getRandomFileName();
-            final String result = uploadImageUtils.uploadFile(mUploadedFileName, myConstant.getUrlSaveImage(), bitmap, planDtl2_Id,"P");
+            final String result = uploadImageUtils.uploadFile(mUploadedFileName, myConstant.getUrlSaveImage(), bitmap, planDtl2_Id, "P");
             Log.d("TAG", "Do in back after save:-->" + result);
             if (result == "NOK") {
                 return "NOK1";
             } else {
                 try {
                     OkHttpClient okHttpClient = new OkHttpClient();
+                    Log.d("name",mUploadedFileName);
                     RequestBody requestBody = new FormEncodingBuilder()
                             .add("isAdd", "true")
                             .add("PlanDtl2_ID", planDtl2_Id)
@@ -538,6 +558,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
                     return response.body().string();
                 } catch (Exception e) {
+
                     return "NOK2";
                 }
             }
@@ -638,6 +659,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         confirmButton = (Button) findViewById(R.id.button9);
         signatureButton = (Button) findViewById(R.id.button8);
         contractButton = (Button) findViewById(R.id.button10);
+        backButton = (Button) findViewById(R.id.button13);
     }
 
     private class SynGPStoServer extends AsyncTask<String, Void, String> {
@@ -680,7 +702,10 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             Log.d("13OctV1", "JSON__GPS->" + s);
             if (s.equals("Success")) {
                 confirmButton.setVisibility(View.VISIBLE);
-                arrivalButton.setVisibility(View.INVISIBLE);
+                takeImgButton.setVisibility(View.VISIBLE);
+                signatureButton.setVisibility(View.VISIBLE);
+                arrivalButton.setVisibility(View.GONE);
+                backButton.setVisibility(View.GONE);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

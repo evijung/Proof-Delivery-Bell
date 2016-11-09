@@ -11,7 +11,7 @@ public class MyConstant {
     private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง ค่ะ!";
 
     private String urlUserString = "http://service.eternity.co.th/TmsPXD/app/CenterService/getUser.php";
-    private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username","gender"};
+    private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username","drv_pic"};
     private String titleUserFalesString = "User False";
     private String messageUserFalesString = "ไม่มี User นี้ในฐานข้อมูลของเรา";
     private String titlePasswordFalse = "Password ผิด";
@@ -25,6 +25,11 @@ public class MyConstant {
     private String urlSaveImagePath = "http://service.eternity.co.th/TmsPXD/app/CenterService/setPicturePath.php";
     private String urlSaveSignPath = "http://service.eternity.co.th/TmsPXD/app/CenterService/setSignPath.php";
     private String urlUpdateStatus = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateStatusConfirm.php";
+    private String urlDriverPicture = "http://service.eternity.co.th/TmsPXD/app/MasterData/driver/avatar/";
+
+    public String getUrlDriverPicture() {
+        return urlDriverPicture;
+    }
 
     public String getUrlUpdateStatus() {
         return urlUpdateStatus;

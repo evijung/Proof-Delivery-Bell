@@ -55,6 +55,8 @@ public class UploadImageUtils {
                             + fileNameInServer + "\"" + lineEnd);
             outputStream.writeBytes(lineEnd);
 
+            Log.d("Name", "Name ==> " + fileNameInServer + "\"" + lineEnd);
+
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);

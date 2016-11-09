@@ -2,6 +2,8 @@ package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 
 public class ServiceActivity extends AppCompatActivity {
 
@@ -59,9 +63,11 @@ public class ServiceActivity extends AppCompatActivity {
         driverChooseString = getIntent().getStringExtra("PlanId");
         dateChooseString = getIntent().getStringExtra("Date");
         truckString = getIntent().getStringExtra("TruckNo");
-        if (loginStrings[3].equals("F")) {
-            Log.d("Tag", "Gender ==> " + loginStrings[3]);
-            iconImageView.setImageResource(R.drawable.female);
+        if (!loginStrings[3].isEmpty()) {
+//            Log.d("Tag", "Gender ==> " + loginStrings[3]);
+//            iconImageView.setImageResource(R.drawable.female);
+            SynLoadImage synLoadImage = new SynLoadImage(iconImageView);
+            synLoadImage.execute();
         }
 
         if (driverChooseString.length() != 0) {
@@ -77,7 +83,6 @@ public class ServiceActivity extends AppCompatActivity {
         //Syn data
         SynDataWhereByDriverID synDataWhereByDriverID = new SynDataWhereByDriverID(ServiceActivity.this);
         synDataWhereByDriverID.execute(myConstant.getUrlDataWhereDriverID());
-
         //Close Controller
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,7 +181,7 @@ public class ServiceActivity extends AppCompatActivity {
                         intent.putExtra("PlanId", planIdStrings);
                         intent.putExtra("TruckNo", truckIdStrings);
                         startActivity(intent);
-                        finish();
+//                        finish();
 
                     }   // onClick
                 });
@@ -190,6 +195,34 @@ public class ServiceActivity extends AppCompatActivity {
         }   // onPost
 
     }   // SynDataWhereByDriverID
+
+    private class SynLoadImage extends AsyncTask<String, Void, Bitmap> {
+        ImageView view;
+
+        public SynLoadImage(ImageView view) {
+            this.view = view;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            String urlString = myConstant.getUrlDriverPicture() + loginStrings[3];
+            Bitmap bitmap = null;
+            try {
+                InputStream inputStream = new java.net.URL(urlString).openStream();
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            view.setImageBitmap(bitmap);
+        }
+    }
 
     private void createDetailList(String planIDString) {
 
@@ -286,6 +319,12 @@ public class ServiceActivity extends AppCompatActivity {
         }   // onPost
 
     }   // SynDetail
+
+
+    @Override
+    public void onBackPressed() {
+
+    }
 
 
 }   // Main Class
