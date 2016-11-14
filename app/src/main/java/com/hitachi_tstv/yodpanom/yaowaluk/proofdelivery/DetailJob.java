@@ -1,6 +1,7 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +46,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DetailJob extends AppCompatActivity implements View.OnClickListener {
+public class DetailJob extends Activity implements View.OnClickListener {
     //Explicit
     private TextView jobNoTextView, storeCodeTextView, storeNameTextView, arrivalTextView, intentToCallTextView;
     private ListView listView;

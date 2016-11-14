@@ -1,5 +1,6 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,7 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class JobListView extends AppCompatActivity {
+public class JobListView extends Activity {
     //Explicit
     private ListView listView;
 

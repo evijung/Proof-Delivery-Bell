@@ -1,5 +1,7 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,8 +9,12 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -29,7 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 
-public class ServiceActivity extends AppCompatActivity {
+public class ServiceActivity extends Activity {
 
     //Explicit
     private TextView nameDriverTextView, idDriverTextView;
@@ -44,6 +50,26 @@ public class ServiceActivity extends AppCompatActivity {
             planArrivalTimeStrings, planDtl2_idStrings, truckIdStrings;
     private String driverChooseString, dateChooseString, truckString;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.logout, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                ComponentName componentName = intent.getComponent();
+                Intent backToMainIntent = IntentCompat.makeRestartActivityTask(componentName);
+                startActivity(backToMainIntent);
+
+                break;
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +89,24 @@ public class ServiceActivity extends AppCompatActivity {
         driverChooseString = getIntent().getStringExtra("PlanId");
         dateChooseString = getIntent().getStringExtra("Date");
         truckString = getIntent().getStringExtra("TruckNo");
-        if (!loginStrings[3].isEmpty()) {
+
+        Log.d("Tag", "Avatar bool 3 ==> " + loginStrings[3].equals("null"));
+        if (!loginStrings[3].equals("null")) {
 //            Log.d("Tag", "Gender ==> " + loginStrings[3]);
 //            iconImageView.setImageResource(R.drawable.female);
             SynLoadImage synLoadImage = new SynLoadImage(iconImageView);
             synLoadImage.execute();
+        } else {
+            int res;
+            Log.d("Tag", "Gender ==> " + loginStrings[4]);
+            Log.d("Tag", "Gender M  bool ==> " + loginStrings[4].equals("M"));
+            if (loginStrings[4].equals("M")) {
+                res = R.drawable.male;
+            }
+            else{
+                res = R.drawable.female;
+            }
+            iconImageView.setImageResource(res);
         }
 
         if (driverChooseString.length() != 0) {

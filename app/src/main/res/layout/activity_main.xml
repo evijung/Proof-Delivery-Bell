@@ -28,7 +28,7 @@
             app:srcCompat="@drawable/htslogo"
             android:id="@+id/imageView2"
             android:layout_margin="@dimen/mini_margin"
-            android:layout_width="@dimen/logo_width" />
+            android:layout_width="300dp" />
 
         <TextView
             android:text="@string/sign_in"

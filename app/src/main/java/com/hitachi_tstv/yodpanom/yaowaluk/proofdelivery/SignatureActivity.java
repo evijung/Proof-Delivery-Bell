@@ -42,7 +42,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-public class SignatureActivity extends AppCompatActivity {
+public class SignatureActivity extends Activity {
     //Explicit
     LinearLayout mContent;
     signature mSignature;
