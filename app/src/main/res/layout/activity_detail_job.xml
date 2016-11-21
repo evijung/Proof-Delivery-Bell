@@ -65,7 +65,8 @@
                     android:id="@+id/button10"
                     android:background="@android:drawable/ic_menu_call"
                     android:layout_weight="1"
-                    android:layout_width="0dp" />
+                    android:layout_width="0dp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -136,28 +137,12 @@
                 android:layout_margin="@dimen/mini_margin" />
 
             <Button
-                android:layout_width="0dp"
-                android:layout_height="@dimen/button_height"
-                android:id="@+id/button6"
-                android:layout_weight="1"
-                android:background="@drawable/takephoto"
-                android:layout_margin="@dimen/mini_margin" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <Button
-                android:layout_height="@dimen/button_height"
+                android:layout_height="42dp"
                 android:id="@+id/button9"
                 android:background="@drawable/confirm"
                 android:layout_margin="@dimen/mini_margin"
-                android:layout_width="@dimen/button_width" />
+                android:layout_width="0dp"
+                android:layout_weight="1" />
 
         </LinearLayout>
 

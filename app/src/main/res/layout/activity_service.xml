@@ -20,14 +20,6 @@
         android:layout_above="@+id/button2"
         android:background="@color/layout_bg2" />
 
-    <Button
-        android:text="@string/close"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button2"
-        android:layout_alignParentBottom="true"
-        android:textSize="@dimen/h_button" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

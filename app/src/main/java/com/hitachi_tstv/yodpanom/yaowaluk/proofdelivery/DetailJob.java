@@ -14,9 +14,11 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
@@ -41,6 +43,7 @@ import com.squareup.okhttp.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,10 +54,11 @@ public class DetailJob extends Activity implements View.OnClickListener {
     private TextView jobNoTextView, storeCodeTextView, storeNameTextView, arrivalTextView, intentToCallTextView;
     private ListView listView;
     private ImageView firstImageView, secondImageView, thirdImageView;
+    private Uri firstUri, secondUri, thirdUri;
     private Button arrivalButton, takeImgButton, confirmButton, signatureButton, contractButton, backButton;
     private MyConstant myConstant = new MyConstant();
     private String[] loginStrings, containerStrings, quantityStrings;
-    private String planDtl2_Id, pathFirstImageString, pathSecondImageString, pathThirdImageString, driverUserNameString, getTimeDate;
+    private String planDtl2_Id, pathFirstImageString, pathSecondImageString, pathThirdImageString, driverUserNameString, getTimeDate,storeLatString,storeLngString,storeRadiusString;
     private LocationManager locationManager;
     private Criteria criteria;
     private Bitmap firstBitmap = null;
@@ -75,9 +79,17 @@ public class DetailJob extends Activity implements View.OnClickListener {
         bindWidget();
 
         //Set Invisible The Button
-        confirmButton.setVisibility(View.INVISIBLE);
-        signatureButton.setVisibility(View.INVISIBLE);
-        takeImgButton.setVisibility(View.INVISIBLE);
+        firstImageView.setVisibility(View.GONE);
+        secondImageView.setVisibility(View.GONE);
+        thirdImageView.setVisibility(View.GONE);
+        confirmButton.setVisibility(View.GONE);
+        signatureButton.setVisibility(View.GONE);
+//        takeImgButton.setVisibility(View.GONE);
+
+        int picRes = R.drawable.picture;
+        firstImageView.setImageResource(picRes);
+        secondImageView.setImageResource(picRes);
+        thirdImageView.setImageResource(picRes);
 
         //Get Intent Data
         loginStrings = getIntent().getStringArrayExtra("Login");
@@ -100,7 +112,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
         secondImageView.setOnClickListener(DetailJob.this);
         thirdImageView.setOnClickListener(DetailJob.this);
         arrivalButton.setOnClickListener(DetailJob.this);
-        takeImgButton.setOnClickListener(DetailJob.this);
+//        takeImgButton.setOnClickListener(DetailJob.this);
         confirmButton.setOnClickListener(DetailJob.this);
         signatureButton.setOnClickListener(DetailJob.this);
         contractButton.setOnClickListener(DetailJob.this);
@@ -177,7 +189,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)  {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
@@ -187,56 +199,78 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 }
                 break;
             case 1://From Select Image First
+
                 if (resultCode == RESULT_OK) {
-                    Uri uri = data.getData();
-                    if (version >= Build.VERSION_CODES.KITKAT) {
 
-                        pathFirstImageString = myFindPathImageOverKitkat(uri);
-                    } else {
-
-                        pathFirstImageString = myFindPathImage(uri);
-                    }
+//                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+//                    firstImageView.setImageBitmap(photo);
+//                    Uri uri = data.getData();
+//                    if (version >= Build.VERSION_CODES.KITKAT) {
+//
+//                        pathFirstImageString = myFindPathImageOverKitkat(firstUri);
+//                    } else {
+//
+//                        pathFirstImageString = myFindPathImage(firstUri);
+//                    }
+                    pathFirstImageString = firstUri.getPath().toString();
                     Log.d("12octV5", "Path First ==> " + pathFirstImageString);
                     try {
-                        firstBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        firstBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(firstUri));
                         if (firstBitmap.getHeight() < firstBitmap.getWidth()) {
                             firstBitmap = rotateBitmap(firstBitmap);
                         }
                         firstImageView.setImageBitmap(firstBitmap);
+                        Log.d("TAG", "Height ==> " + firstBitmap.getHeight() + " Width ==> " + firstBitmap.getWidth());
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
 
-                    // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
+//                     firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
 
-                    // firstImageView.setImageURI(uri);
+//                     firstImageView.setImageURI(firstUri);
                 }
                 break;
             case 2:
                 if (resultCode == RESULT_OK) {
-                    Uri uri = data.getData();
-                    if (version >= Build.VERSION_CODES.KITKAT) {
 
-                        pathSecondImageString = myFindPathImageOverKitkat(uri);
-                    } else {
-
-                        pathSecondImageString = myFindPathImage(uri);
-                    }
+                    pathSecondImageString = secondUri.toString();
                     Log.d("12octV5", "Path Second ==> " + pathSecondImageString);
                     try {
-                        secondBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        secondBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(secondUri));
                         if (secondBitmap.getHeight() < secondBitmap.getWidth()) {
                             secondBitmap = rotateBitmap(secondBitmap);
                         }
-                        Log.d("Tag", "Height ==> " + secondBitmap.getHeight() + " , Width ==> " + secondBitmap.getWidth());
-
-
                         secondImageView.setImageBitmap(secondBitmap);
+                        Log.d("TAG", "Height ==> " + secondBitmap.getHeight() + " Width ==> " + secondBitmap.getWidth());
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+
+
+//                    Uri uri = data.getData();
+//                    if (version >= Build.VERSION_CODES.KITKAT) {
+//
+//                        pathSecondImageString = myFindPathImageOverKitkat(uri);
+//                    } else {
+//
+//                        pathSecondImageString = myFindPathImage(uri);
+//                    }
+//                    Log.d("12octV5", "Path Second ==> " + pathSecondImageString);
+//                    try {
+//                        secondBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+//                        if (secondBitmap.getHeight() < secondBitmap.getWidth()) {
+//                            secondBitmap = rotateBitmap(secondBitmap);
+//                        }
+//                        Log.d("Tag", "Height ==> " + secondBitmap.getHeight() + " , Width ==> " + secondBitmap.getWidth());
+//
+//
+//                        secondImageView.setImageBitmap(secondBitmap);
+//
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
 
                     // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
 
@@ -245,26 +279,41 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 break;
             case 3:
                 if (resultCode == RESULT_OK) {
-                    Uri uri = data.getData();
-                    if (version >= Build.VERSION_CODES.KITKAT) {
 
-                        pathThirdImageString = myFindPathImageOverKitkat(uri);
-                    } else {
-
-                        pathThirdImageString = myFindPathImage(uri);
-                    }
+                    pathThirdImageString = thirdUri.toString();
                     Log.d("12octV5", "Path Third ==> " + pathThirdImageString);
-
                     try {
-                        thirdBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        thirdBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(thirdUri));
                         if (thirdBitmap.getHeight() < thirdBitmap.getWidth()) {
                             thirdBitmap = rotateBitmap(thirdBitmap);
                         }
                         thirdImageView.setImageBitmap(thirdBitmap);
+                        Log.d("TAG", "Height ==> " + thirdBitmap.getHeight() + " Width ==> " + thirdBitmap.getWidth());
 
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+
+//                    Uri uri = data.getData();
+//                    if (version >= Build.VERSION_CODES.KITKAT) {
+//
+//                        pathThirdImageString = myFindPathImageOverKitkat(uri);
+//                    } else {
+//
+//                        pathThirdImageString = myFindPathImage(uri);
+//                    }
+//                    Log.d("12octV5", "Path Third ==> " + pathThirdImageString);
+//
+//                    try {
+//                        thirdBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+//                        if (thirdBitmap.getHeight() < thirdBitmap.getWidth()) {
+//                            thirdBitmap = rotateBitmap(thirdBitmap);
+//                        }
+//                        thirdImageView.setImageBitmap(thirdBitmap);
+//
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
 
                     // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
 
@@ -276,48 +325,12 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
     }
 
-    private String myFindPathImage(Uri uri) {
-        String result = null;
-        String[] strings = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(uri,
-                strings, null, null, null);
-
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(index);
-            cursor.close();
-        } else {
-            result = uri.getPath();
-        }
-
-        cursor.close();
-        return result;
-
-    }
-
-
-    private String myFindPathImageOverKitkat(Uri uri) {
-
-        String wholeId = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            wholeId = DocumentsContract.getDocumentId(uri);
-        }
-        String id = wholeId.split(":")[1];
-
-        String result = null;
-        String[] strings = {MediaStore.Images.Media.DATA};
-
-        String sel = MediaStore.Images.Media._ID + "=?";
-
-        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                strings, sel, new String[]{id}, null);
-
-        int columnIndex = cursor.getColumnIndex(strings[0]);
-        if (cursor.moveToFirst()) {
-            result = cursor.getString(columnIndex);
-        }
-        cursor.close();
+//    private String myFindPathImage(Uri uri) {
+//        String result = null;
+//        String[] strings = {MediaStore.Images.Media.DATA};
+//        Cursor cursor = getContentResolver().query(uri,
+//                strings, null, null, null);
+//
 //        if (cursor != null) {
 //            cursor.moveToFirst();
 //            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
@@ -326,44 +339,100 @@ public class DetailJob extends Activity implements View.OnClickListener {
 //        } else {
 //            result = uri.getPath();
 //        }
-
-        Log.d("Tag", "Result ==> " + result + ", URI ==> " + uri);
-        Log.d("Tag", "Cursor ==> " + cursor.toString());
-
-        return result;
-
-    }
+//
+//        cursor.close();
+//        return result;
+//
+//    }
+//
+//    private String myFindPathImageOverKitkat(Uri uri) {
+//
+//        String wholeId = null;
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+//            wholeId = DocumentsContract.getDocumentId(uri);
+//        }
+//        String id = wholeId.split(":")[1];
+//
+//        String result = null;
+//        String[] strings = {MediaStore.Images.Media.DATA};
+//
+//        String sel = MediaStore.Images.Media._ID + "=?";
+//
+//        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                strings, sel, new String[]{id}, null);
+//
+//        int columnIndex = cursor.getColumnIndex(strings[0]);
+//        if (cursor.moveToFirst()) {
+//            result = cursor.getString(columnIndex);
+//        }
+//        cursor.close();
+////        if (cursor != null) {
+////            cursor.moveToFirst();
+////            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
+////            result = cursor.getString(index);
+////            cursor.close();
+////        } else {
+////            result = uri.getPath();
+////        }
+//
+//        Log.d("Tag", "Result ==> " + result + ", URI ==> " + uri);
+//        Log.d("Tag", "Cursor ==> " + cursor.toString());
+//
+//        return result;
+//
+//    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imageView5: //First
+                File originalFile1 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "first.png");
 
-                Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
-                intent1.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent1, "Please Choose Photo"), 1);
+                Intent cameraIntent1 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                firstUri = Uri.fromFile(originalFile1);
+                Log.d("TAG", "Path 1 " + firstUri);
+                cameraIntent1.putExtra(MediaStore.EXTRA_OUTPUT, firstUri);
+                startActivityForResult(cameraIntent1, 1);
+
+//                Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent1.setType("image/*");
+//                startActivityForResult(Intent.createChooser(intent1, "Please Choose Photo"), 1);
 
                 break;
             case R.id.imageView4: //Second
+                File originalFile2 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "second.png");
 
-                Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
-                intent2.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent2, "Please Choose Photo"), 2);
+                Intent cameraIntent2 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                secondUri = Uri.fromFile(originalFile2);
+                Log.d("TAG", "Path 2 " +   secondUri);
+                cameraIntent2.putExtra(MediaStore.EXTRA_OUTPUT, secondUri);
+                startActivityForResult(cameraIntent2, 2);
+
+//                Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent2.setType("image/*");
+//                startActivityForResult(Intent.createChooser(intent2, "Please Choose Photo"), 2);
 
                 break;
             case R.id.imageView3: //Third
+                File originalFile3 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "third.png");
 
-                Intent intent3 = new Intent(Intent.ACTION_GET_CONTENT);
-                intent3.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent3, "Please Choose Photo"), 3);
+                Intent cameraIntent3 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                thirdUri = Uri.fromFile(originalFile3);
+                Log.d("TAG", "Path " + thirdUri);
+                cameraIntent3.putExtra(MediaStore.EXTRA_OUTPUT, thirdUri);
+                startActivityForResult(cameraIntent3, 3);
+
+//                Intent intent3 = new Intent(Intent.ACTION_GET_CONTENT);
+//                intent3.setType("image/*");
+//                startActivityForResult(Intent.createChooser(intent3, "Please Choose Photo"), 3);
 
                 break;
-            case R.id.button6: //Take Image
-
-                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                startActivityForResult(intent, 0);
-
-                break;
+//            case R.id.button6: //Take Image
+//
+//                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+//                startActivityForResult(intent, 0);
+//
+//                break;
             case R.id.button7: //Arrival
                 String strLat = "Unknown";
                 String strLng = "Unknown";
@@ -385,6 +454,18 @@ public class DetailJob extends Activity implements View.OnClickListener {
                     Toast.makeText(this, "Failure Lat/Lng is Unknown", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("13OctV1", " ++++++++++Latitude.-> " + strLat + " Longitude.-> " + strLng);
+
+                    double lat1, lat2, lng1, lng2;
+                    lat1 = Double.parseDouble(strLat);
+                    lng1 = Double.parseDouble(strLng);
+                    lat2 = Double.parseDouble(storeLatString);
+                    lng2 = Double.parseDouble(storeLngString);
+
+                    Log.d("TAG", "lat1 ==> " + lat1 + " lng1 ==> " + lng1 + " lat2 ==> " + lat2 + " lng2 ==> " + lng2);
+
+
+
+
                     SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
                     synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
 
@@ -400,21 +481,24 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 Log.d("Tag1", "First ==> " + pathFirstImageString);
                 Log.d("Tag2", "Second ==> " + pathSecondImageString);
                 Log.d("Tag3", "Third ==> " + pathThirdImageString);
-                if (pathFirstImageString != null) {
+                if (pathFirstImageString != null && pathSecondImageString != null && pathThirdImageString != null) {
+
                     SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, firstBitmap);
                     synUploadImage.execute();
-                }
-                if (pathSecondImageString != null) {
-                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, secondBitmap);
+
+                    synUploadImage = new SynUploadImage(DetailJob.this, secondBitmap);
                     synUploadImage.execute();
-                }
-                if (pathThirdImageString != null) {
-                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, thirdBitmap);
+
+                    synUploadImage = new SynUploadImage(DetailJob.this, thirdBitmap);
                     synUploadImage.execute();
+
+                    SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
+                    synUpdateStatus.execute();
+
+                } else {
+                    Toast.makeText(this, "Please take all photo", Toast.LENGTH_SHORT).show();
                 }
 
-                SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
-                synUpdateStatus.execute();
 
 
                 break;
@@ -510,7 +594,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
         }
     }
 
-
     private class SynUploadImage extends AsyncTask<Void, Void, String> {
         //Explicit
         private Context context;
@@ -545,7 +628,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
             } else {
                 try {
                     OkHttpClient okHttpClient = new OkHttpClient();
-                    Log.d("name",mUploadedFileName);
+                    Log.d("name", mUploadedFileName);
                     RequestBody requestBody = new FormEncodingBuilder()
                             .add("isAdd", "true")
                             .add("PlanDtl2_ID", planDtl2_Id)
@@ -593,7 +676,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
         }
     }
 
-
     private class SynData extends AsyncTask<String, Void, String> {
         //Explicit
         private Context context;
@@ -636,12 +718,15 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 storeNameTextView.setText("Store Name : " + jsonObject.getString("store_nameEng"));
                 arrivalTextView.setText("Arrival : " + jsonObject.getString("plan_arrivalDateTime"));
                 intentToCallTextView.setText(jsonObject.getString("store_tel"));
+
+                storeLatString = jsonObject.getString("store_lat");
+                storeLngString = jsonObject.getString("store_long");
+                storeRadiusString = jsonObject.getString("gps_radius");
             } catch (Exception e) {
                 Log.d("12octV4", "e onPost ==> " + e);
             }
         }
     }//SynData
-
 
     private void bindWidget() {
 
@@ -656,7 +741,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
         secondImageView = (ImageView) findViewById(R.id.imageView4);
         thirdImageView = (ImageView) findViewById(R.id.imageView3);
         arrivalButton = (Button) findViewById(R.id.button7);
-        takeImgButton = (Button) findViewById(R.id.button6);
+//        takeImgButton = (Button) findViewById(R.id.button6);
         confirmButton = (Button) findViewById(R.id.button9);
         signatureButton = (Button) findViewById(R.id.button8);
         contractButton = (Button) findViewById(R.id.button10);
@@ -702,8 +787,11 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
             Log.d("13OctV1", "JSON__GPS->" + s);
             if (s.equals("Success")) {
+                firstImageView.setVisibility(View.VISIBLE);
+                secondImageView.setVisibility(View.VISIBLE);
+                thirdImageView.setVisibility(View.VISIBLE);
                 confirmButton.setVisibility(View.VISIBLE);
-                takeImgButton.setVisibility(View.VISIBLE);
+//                takeImgButton.setVisibility(View.VISIBLE);
                 signatureButton.setVisibility(View.VISIBLE);
                 arrivalButton.setVisibility(View.GONE);
                 backButton.setVisibility(View.GONE);
@@ -753,7 +841,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
         return location;
     }
 
-
     public final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
@@ -776,7 +863,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
         }
     };
-
 
     private void setupLocation() {
 

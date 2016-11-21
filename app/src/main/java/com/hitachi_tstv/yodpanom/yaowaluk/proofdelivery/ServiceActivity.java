@@ -39,7 +39,7 @@ public class ServiceActivity extends Activity {
 
     //Explicit
     private TextView nameDriverTextView, idDriverTextView;
-    private Button jobListButton, closeButton;
+    private Button jobListButton;
     private ListView listView;
     private String[] loginStrings;
     private ImageView iconImageView;
@@ -80,7 +80,6 @@ public class ServiceActivity extends Activity {
         nameDriverTextView = (TextView) findViewById(R.id.textView2);
         idDriverTextView = (TextView) findViewById(R.id.textView4);
         jobListButton = (Button) findViewById(R.id.button3);
-        closeButton = (Button) findViewById(R.id.button2);
         listView = (ListView) findViewById(R.id.listJob);
         iconImageView = (ImageView) findViewById(R.id.imageView);
 
@@ -122,13 +121,6 @@ public class ServiceActivity extends Activity {
         //Syn data
         SynDataWhereByDriverID synDataWhereByDriverID = new SynDataWhereByDriverID(ServiceActivity.this);
         synDataWhereByDriverID.execute(myConstant.getUrlDataWhereDriverID());
-        //Close Controller
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
 
     }   // Main Method
