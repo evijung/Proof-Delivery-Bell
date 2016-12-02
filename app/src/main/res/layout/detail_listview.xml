@@ -5,7 +5,7 @@
     android:padding="@dimen/padding">
 
     <TextView
-        android:text="TextView"
+        android:text="@string/job"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/textView11"
@@ -13,7 +13,7 @@
         android:textSize="@dimen/h3" />
 
     <TextView
-        android:text="TextView"
+        android:text="@string/store"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/textView12"
@@ -21,7 +21,7 @@
         android:textSize="@dimen/h3" />
 
     <TextView
-        android:text="TextView"
+        android:text="@string/time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/textView13"

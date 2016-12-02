@@ -104,7 +104,7 @@
         </LinearLayout>
 
         <Button
-            android:text="Date"
+            android:text="@string/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/button3"

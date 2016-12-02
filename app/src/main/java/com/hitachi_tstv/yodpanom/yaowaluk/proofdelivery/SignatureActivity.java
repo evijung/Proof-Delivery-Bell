@@ -54,7 +54,7 @@ public class SignatureActivity extends Activity {
     File mypath;
     MyConstant myConstant;
     private String[] loginStrings;
-    private String plan_id, sign_name;
+    private String plan_id, sign_name, planDateString;
 
 
     private String uniqueId;
@@ -76,6 +76,7 @@ public class SignatureActivity extends Activity {
 
         plan_id = getIntent().getStringExtra("PlanDtl");
         loginStrings = getIntent().getStringArrayExtra("Login");
+        planDateString = getIntent().getStringExtra("Date");
         myConstant = new MyConstant();
 
 
@@ -125,7 +126,7 @@ public class SignatureActivity extends Activity {
 
 
         if (yourName.getText().toString().equalsIgnoreCase("")) {
-            errorMessage = errorMessage + "Please enter your Name\n";
+            errorMessage = errorMessage + getResources().getString(R.string.err_not_name);
             error = true;
         }
 
@@ -136,59 +137,6 @@ public class SignatureActivity extends Activity {
         }
 
         return error;
-    }
-
-    private String getTodaysDate() {
-
-        final Calendar c = Calendar.getInstance();
-        int todaysDate = (c.get(Calendar.YEAR) * 10000) +
-                ((c.get(Calendar.MONTH) + 1) * 100) +
-                (c.get(Calendar.DAY_OF_MONTH));
-        Log.w("DATE:", String.valueOf(todaysDate));
-        return (String.valueOf(todaysDate));
-
-    }
-
-    private String getCurrentTime() {
-
-        final Calendar c = Calendar.getInstance();
-        int currentTime = (c.get(Calendar.HOUR_OF_DAY) * 10000) +
-                (c.get(Calendar.MINUTE) * 100) +
-                (c.get(Calendar.SECOND));
-        Log.w("TIME:", String.valueOf(currentTime));
-        return (String.valueOf(currentTime));
-
-    }
-
-
-    private boolean prepareDirectory() {
-        try {
-            if (makedirs()) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Could not initiate File System.. Is Sdcard mounted properly?", Toast.LENGTH_LONG).show();
-            return false;
-        }
-    }
-
-    private boolean makedirs() {
-        File tempdir = new File(tempDir);
-        if (!tempdir.exists())
-            tempdir.mkdirs();
-
-        if (tempdir.isDirectory()) {
-            File[] files = tempdir.listFiles();
-            for (File file : files) {
-                if (!file.delete()) {
-                    System.out.println("Failed to delete " + file);
-                }
-            }
-        }
-        return (tempdir.isDirectory());
     }
 
     private class SynUploadImage extends AsyncTask<Void, Void, String> {

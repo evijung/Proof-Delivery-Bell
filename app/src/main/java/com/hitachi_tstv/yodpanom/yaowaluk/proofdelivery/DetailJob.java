@@ -55,15 +55,16 @@ public class DetailJob extends Activity implements View.OnClickListener {
     private ListView listView;
     private ImageView firstImageView, secondImageView, thirdImageView;
     private Uri firstUri, secondUri, thirdUri;
-    private Button arrivalButton, takeImgButton, confirmButton, signatureButton, contractButton, backButton;
+    private Button arrivalButton, takeImgButton, confirmButton, signatureButton, contractButton, backButton, startLoadButton, finLoadButton;
     private MyConstant myConstant = new MyConstant();
     private String[] loginStrings, containerStrings, quantityStrings;
-    private String planDtl2_Id, pathFirstImageString, pathSecondImageString, pathThirdImageString, driverUserNameString, getTimeDate,storeLatString,storeLngString,storeRadiusString;
+    private String planDtl2_Id, planDateString, pathFirstImageString, pathSecondImageString, pathThirdImageString, driverUserNameString, getTimeDate,storeLatString,storeLngString,storeRadiusString;
     private LocationManager locationManager;
     private Criteria criteria;
     private Bitmap firstBitmap = null;
     private Bitmap secondBitmap = null;
     private Bitmap thirdBitmap = null;
+    private String startLoadString, finLoadString;
     private int version;
 
 
@@ -85,6 +86,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
         confirmButton.setVisibility(View.GONE);
         signatureButton.setVisibility(View.GONE);
 //        takeImgButton.setVisibility(View.GONE);
+        startLoadButton.setVisibility(View.GONE);
+        finLoadButton.setVisibility(View.GONE);
 
         int picRes = R.drawable.picture;
         firstImageView.setImageResource(picRes);
@@ -94,6 +97,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
         //Get Intent Data
         loginStrings = getIntent().getStringArrayExtra("Login");
         planDtl2_Id = getIntent().getStringExtra("planDtl2_id");
+        planDateString = getIntent().getStringExtra("Date");
         driverUserNameString = loginStrings[2];
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -117,6 +121,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
         signatureButton.setOnClickListener(DetailJob.this);
         contractButton.setOnClickListener(DetailJob.this);
         backButton.setOnClickListener(DetailJob.this);
+        startLoadButton.setOnClickListener(DetailJob.this);
+        finLoadButton.setOnClickListener(DetailJob.this);
 
     }//Main Method
 
@@ -382,10 +388,27 @@ public class DetailJob extends Activity implements View.OnClickListener {
 //
 //    }
 
+    private double getMeterFromLatLong(double lat1, double lat2, double lng1, double lng2) {
+        Math math = null;
+        double result,diffLat,diffLong;
+        lat1 = lat1 * (math.PI / 180);
+        lat2 = lat2 * (math.PI / 180);
+        lng1 = lng1 * (math.PI / 180);
+        lng2 = lng2 * (math.PI / 180);
+
+        diffLat = lat2 - lat1;
+        diffLong = lng2 - lng1;
+        result = (math.sin(diffLat / 2) * math.sin(diffLat / 2)) + (math.cos(lat1) * math.cos(lat2) * (math.sin(diffLong / 2) * math.sin(diffLong / 2)));
+        result = 2 * math.atan2(math.sqrt(result), math.sqrt(1 - result));
+        result = 6371 * result;
+        return result;
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imageView5: //First
+//                loadDateString = DateFormat.getDateTimeInstance().format(new Date());
                 File originalFile1 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "first.png");
 
                 Intent cameraIntent1 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -451,7 +474,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
 
                 if (strLat.equals("Unknown") && strLng.equals("Unknown")) {
-                    Toast.makeText(this, "Failure Lat/Lng is Unknown", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.err_gps1), Toast.LENGTH_SHORT).show();
                 } else {
                     Log.d("13OctV1", " ++++++++++Latitude.-> " + strLat + " Longitude.-> " + strLng);
 
@@ -463,11 +486,19 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
                     Log.d("TAG", "lat1 ==> " + lat1 + " lng1 ==> " + lng1 + " lat2 ==> " + lat2 + " lng2 ==> " + lng2);
 
+                    double result = getMeterFromLatLong(lat1, lat2, lng1, lng2);
+                    float km = (float) result;
+                    float m = Float.parseFloat(String.format("%.2f", km)) * 1000;
+
+                    if (m < Float.parseFloat(storeRadiusString)) {
+                        SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
+                        synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
+
+                    } else {
+                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
+                    }
 
 
-
-                    SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
-                    synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
 
                 }
                 break;
@@ -475,6 +506,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 Intent intentSign = new Intent(DetailJob.this, SignatureActivity.class);
                 intentSign.putExtra("Login", loginStrings);
                 intentSign.putExtra("PlanDtl", planDtl2_Id);
+                intentSign.putExtra("Date", planDateString);
                 startActivity(intentSign);
                 break;
             case R.id.button9: //Confirm
@@ -496,7 +528,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                     synUpdateStatus.execute();
 
                 } else {
-                    Toast.makeText(this, "Please take all photo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getResources().getString(R.string.err_conf1), Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -524,11 +556,28 @@ public class DetailJob extends Activity implements View.OnClickListener {
             case R.id.button13: //Back
                 Intent backIntent = new Intent(DetailJob.this, ServiceActivity.class);
                 backIntent.putExtra("Login", loginStrings);
-                backIntent.putExtra("Date", "");
+                backIntent.putExtra("Date", planDateString);
                 backIntent.putExtra("PlanId", "");
                 backIntent.putExtra("TruckNo", "");
                 startActivity(backIntent);
                 finish();
+                break;
+
+            case R.id.button5:
+                startLoadString = DateFormat.getDateTimeInstance().format(new Date());
+                Toast.makeText(this, getResources().getString(R.string.start_load), Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.button4:
+                finLoadString = DateFormat.getDateTimeInstance().format(new Date());
+                startLoadButton.setVisibility(View.GONE);
+                finLoadButton.setVisibility(View.GONE);
+                confirmButton.setVisibility(View.VISIBLE);
+                signatureButton.setVisibility(View.VISIBLE);
+
+                Toast.makeText(this, getResources().getString(R.string.fin_load), Toast.LENGTH_SHORT).show();
+                break;
+
         }//switch
     }// onClick
 
@@ -551,13 +600,13 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "Save Job Complete!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getResources().getString(R.string.save_comp), Toast.LENGTH_SHORT).show();
                     }
                 });
 
                 Intent intent = new Intent(DetailJob.this, ServiceActivity.class);
                 intent.putExtra("Login", loginStrings);
-                intent.putExtra("Date", "");
+                intent.putExtra("Date", planDateString);
                 intent.putExtra("PlanId", "");
                 intent.putExtra("TruckNo", "");
                 startActivity(intent);
@@ -567,7 +616,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "Save Job Incomplete!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getResources().getString(R.string.save_incomp), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -582,6 +631,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         .add("isAdd", "true")
                         .add("PlanDtl2_ID", planDtl2_Id)
                         .add("Driver_Name", loginStrings[2])
+//                        .add("Load_Date",strings[0])
                         .build();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(myConstant.getUrlUpdateStatus()).post(requestBody).build();
@@ -613,8 +663,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
             super.onPreExecute();
 
             progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("Waiting...");
-            progressDialog.show();
+            progressDialog.show(context,null,getResources().getString(R.string.waiting),true,false);
         }
 
         @Override
@@ -660,7 +709,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "Add Image Successful!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getResources().getString(R.string.add_img_comp), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -668,7 +717,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "Add Image Unsuccessful!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getResources().getString(R.string.add_img_incomp), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -713,11 +762,11 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
 
                 //Show Text
-                jobNoTextView.setText("Job No : " + jsonObject.getString("work_sheet_no"));
-                storeCodeTextView.setText("Store Code : " + jsonObject.getString("store_code"));
-                storeNameTextView.setText("Store Name : " + jsonObject.getString("store_nameEng"));
-                arrivalTextView.setText("Arrival : " + jsonObject.getString("plan_arrivalDateTime"));
-                intentToCallTextView.setText(jsonObject.getString("store_tel"));
+                jobNoTextView.setText(getResources().getString(R.string.job) + " : " + jsonObject.getString("work_sheet_no"));
+                storeCodeTextView.setText(getResources().getString(R.string.store_code) + " : " + jsonObject.getString("store_code"));
+                storeNameTextView.setText(getResources().getString(R.string.store_name) + " : " + jsonObject.getString("store_nameEng"));
+                arrivalTextView.setText(getResources().getString(R.string.time) + " : " + jsonObject.getString("plan_arrivalDateTime"));
+                intentToCallTextView.setText(getResources().getString(R.string.call) + " : " + jsonObject.getString("store_tel"));
 
                 storeLatString = jsonObject.getString("store_lat");
                 storeLngString = jsonObject.getString("store_long");
@@ -746,6 +795,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
         signatureButton = (Button) findViewById(R.id.button8);
         contractButton = (Button) findViewById(R.id.button10);
         backButton = (Button) findViewById(R.id.button13);
+        startLoadButton = (Button) findViewById(R.id.button5);
+        finLoadButton = (Button) findViewById(R.id.button4);
     }
 
     private class SynGPStoServer extends AsyncTask<String, Void, String> {
@@ -790,22 +841,22 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 firstImageView.setVisibility(View.VISIBLE);
                 secondImageView.setVisibility(View.VISIBLE);
                 thirdImageView.setVisibility(View.VISIBLE);
-                confirmButton.setVisibility(View.VISIBLE);
+                startLoadButton.setVisibility(View.VISIBLE);
 //                takeImgButton.setVisibility(View.VISIBLE);
-                signatureButton.setVisibility(View.VISIBLE);
+                finLoadButton.setVisibility(View.VISIBLE);
                 arrivalButton.setVisibility(View.GONE);
                 backButton.setVisibility(View.GONE);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "Update GPS To Server Successful!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getResources().getString(R.string.add_gps_comp), Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "Update GPS To Server Unsuccessful!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getResources().getString(R.string.add_gps_incomp), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

@@ -51,8 +51,8 @@ public class DateAdapter extends BaseAdapter{
         TextView storeTextView = (TextView) view1.findViewById(R.id.textView6);
 
         //Show View
-        dateTextView.setText("Date :: " + dateStrings[i]);
-        storeTextView.setText("Store " + storeStrings[i] + " place");
+        dateTextView.setText(context.getResources().getString(R.string.date) + " :: " + dateStrings[i]);
+        storeTextView.setText(context.getResources().getString(R.string.store_qty) + " :: " + storeStrings[i] + " " + context.getResources().getString(R.string.place));
 
         return view1;
     }

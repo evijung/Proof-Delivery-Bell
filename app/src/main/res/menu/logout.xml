@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ServiceActivity">
 
-    <item android:title="Logout"
+    <item android:title="@string/logout"
         android:id="@+id/logout"
         app:showAsAction="ifRoom"
         />

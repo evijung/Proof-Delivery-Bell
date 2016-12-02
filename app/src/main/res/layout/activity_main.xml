@@ -12,16 +12,25 @@
     tools:context="com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery.MainActivity"
     android:background="@drawable/bg">
 
+    <Button
+        android:text="@string/sign_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button"
+        android:elevation="0dp"
+        android:layout_alignParentBottom="true"
+        android:textSize="@dimen/h_button" />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="@dimen/block"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:padding="@dimen/padding"
-        android:layout_marginTop="@dimen/padding"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        android:background="#64ffffff">
+        android:background="#64ffffff"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
 
         <ImageView
             android:layout_height="wrap_content"
@@ -60,14 +69,5 @@
             android:textSize="@dimen/h2" />
 
     </LinearLayout>
-
-    <Button
-        android:text="@string/sign_in"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:elevation="0dp"
-        android:layout_alignParentBottom="true"
-        android:textSize="@dimen/h_button" />
 
 </RelativeLayout>

@@ -25,7 +25,7 @@ public class MyAlert {
         builder.setIcon(intIcon);
         builder.setTitle(strTitle);
         builder.setMessage(strMessage);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(context.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

@@ -19,14 +19,14 @@
         android:layout_alignParentBottom="true">
 
         <Button
-            android:text="Save"
+            android:text="@string/save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button12"
             android:layout_weight="1" />
 
         <Button
-            android:text="CLEAR"
+            android:text="@string/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/button11"
@@ -54,7 +54,7 @@
         android:layout_marginBottom="@dimen/mini_margin">
 
         <TextView
-            android:text="Signature"
+            android:text="@string/signature"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView21"
@@ -67,7 +67,7 @@
             android:inputType="textPersonName"
             android:ems="10"
             android:id="@+id/editText5"
-            android:hint="Full Name" />
+            android:hint="@string/full_name" />
 
     </LinearLayout>
 </RelativeLayout>

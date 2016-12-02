@@ -1,6 +1,7 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -93,7 +94,7 @@ public class ServiceActivity extends Activity {
         if (!loginStrings[3].equals("null")) {
 //            Log.d("Tag", "Gender ==> " + loginStrings[3]);
 //            iconImageView.setImageResource(R.drawable.female);
-            SynLoadImage synLoadImage = new SynLoadImage(iconImageView);
+            SynLoadImage synLoadImage = new SynLoadImage(iconImageView, this);
             synLoadImage.execute();
         } else {
             int res;
@@ -129,9 +130,19 @@ public class ServiceActivity extends Activity {
 
         //Explicit
         private Context context;
+        private ProgressDialog progressDialog;
 
         public SynDataWhereByDriverID(Context context) {
             this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage(getResources().getString(R.string.loading));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
         @Override
@@ -153,6 +164,7 @@ public class ServiceActivity extends Activity {
 
 
             } catch (Exception e) {
+                progressDialog.dismiss();
                 Log.d("12octV1", "e doInBack ==> " + e.toString());
                 return null;
             }
@@ -164,7 +176,7 @@ public class ServiceActivity extends Activity {
             super.onPostExecute(s);
 
             Log.d("12octV1", "JSON ==> " + s);
-
+            progressDialog.dismiss();
             try {
 
                 JSONArray jsonArray = new JSONArray(s);
@@ -186,14 +198,14 @@ public class ServiceActivity extends Activity {
                 if (aBoolean) {
 
                     //True Not Click on Button
-                    jobListButton.setText("Job List : " + planDateStrings[0]);
+                    jobListButton.setText(getResources().getString(R.string.joblist) + " : " + planDateStrings[0]);
                     idDriverTextView.setText(truckIdStrings[0]);
                     createDetailList(planIdStrings[0]);
 
 
                 } else {
                     // From Job List View
-                    jobListButton.setText("Job List = " + dateChooseString);
+                    jobListButton.setText(getResources().getString(R.string.joblist) + " : " + dateChooseString);
                     idDriverTextView.setText(truckString);
 
                     createDetailList(driverChooseString);
@@ -219,6 +231,7 @@ public class ServiceActivity extends Activity {
 
 
             } catch (Exception e) {
+                progressDialog.dismiss();
                 Log.d("12octV1", "e onPost ==> " + e.toString());
             }
 
@@ -228,10 +241,22 @@ public class ServiceActivity extends Activity {
     }   // SynDataWhereByDriverID
 
     private class SynLoadImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView view;
+        private ImageView view;
+        private Context context;
+        private ProgressDialog progressDialog;
 
-        public SynLoadImage(ImageView view) {
+        public SynLoadImage(ImageView view, Context context) {
             this.view = view;
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage(getResources().getString(R.string.loading));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
         @Override
@@ -242,8 +267,10 @@ public class ServiceActivity extends Activity {
                 InputStream inputStream = new java.net.URL(urlString).openStream();
                 bitmap = BitmapFactory.decodeStream(inputStream);
             } catch (MalformedURLException e) {
+                progressDialog.dismiss();
                 e.printStackTrace();
             } catch (IOException e) {
+                progressDialog.dismiss();
                 e.printStackTrace();
             }
             return bitmap;
@@ -252,6 +279,7 @@ public class ServiceActivity extends Activity {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             view.setImageBitmap(bitmap);
+            progressDialog.dismiss();
         }
     }
 
@@ -268,6 +296,7 @@ public class ServiceActivity extends Activity {
         //Explicit
         private Context context;
         private String planIdString;
+        private ProgressDialog progressDialog;
 
         public SynDetail(Context context,
                          String planIdString
@@ -275,6 +304,15 @@ public class ServiceActivity extends Activity {
             this.context = context;
             this.planIdString = planIdString;
 
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage(getResources().getString(R.string.loading));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
         @Override
@@ -295,6 +333,7 @@ public class ServiceActivity extends Activity {
                 return response.body().string();
 
             } catch (Exception e) {
+                progressDialog.dismiss();
                 Log.d("12octV2", "e doInBack " + e.toString());
                 return null;
             }
@@ -306,6 +345,7 @@ public class ServiceActivity extends Activity {
             super.onPostExecute(s);
 
             Log.d("12octV2", "JSoN ==> " + s);
+            progressDialog.dismiss();
 
             try {
 
@@ -336,6 +376,7 @@ public class ServiceActivity extends Activity {
                         Intent intent = new Intent(ServiceActivity.this,DetailJob.class);
                         intent.putExtra("Login", loginStrings);
                         intent.putExtra("planDtl2_id", planDtl2_idStrings[i]);
+                        intent.putExtra("Date", planDateStrings);
                         startActivity(intent);
                         finish();
                     }
@@ -343,6 +384,7 @@ public class ServiceActivity extends Activity {
 
 
             } catch (Exception e) {
+                progressDialog.dismiss();
                 Log.d("12octV2", "e onPost ==> " + e.toString());
             }
 

@@ -3,7 +3,9 @@ package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +24,8 @@ import com.squareup.okhttp.internal.Internal;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Locale;
+
 public class MainActivity extends Activity {
 
     //Explicit
@@ -31,10 +35,15 @@ public class MainActivity extends Activity {
     private ImageView logoImageView;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Configuration configuration = new Configuration();
+        configuration.locale = new Locale("th");
+        getResources().updateConfiguration(configuration, null);
 
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
@@ -108,7 +117,8 @@ public class MainActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("Loading...");
+            progressDialog.setMessage(getResources().getString(R.string.loading));
+            progressDialog.setCancelable(false);
             progressDialog.show();
         }
 
@@ -123,6 +133,8 @@ public class MainActivity extends Activity {
 
                 return response.body().string();
             } catch (Exception e) {
+
+                progressDialog.dismiss();
                 Log.d("11octV1", "e doInback-->" + e.toString());
                 return null;
             }

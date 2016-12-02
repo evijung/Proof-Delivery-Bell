@@ -1,21 +1,23 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
+import android.app.Application;
+import android.content.Context;
+
 /**
  * Created by musz on 10/11/2016.
  */
 
-public class MyConstant {
+public class MyConstant{
     //Explicit
     private int iconAnInt = R.drawable.warning48; // Image for icon 48x48
     private String titleHaveSpaceString = "มีช่องว่าง";
-    private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง ค่ะ!";
-
+    private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง!!";
     private String urlUserString = "http://service.eternity.co.th/TmsPXD/app/CenterService/getUser.php";
     private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username","drv_pic","gender"};
-    private String titleUserFalesString = "User False";
-    private String messageUserFalesString = "ไม่มี User นี้ในฐานข้อมูลของเรา";
-    private String titlePasswordFalse = "Password ผิด";
-    private String messagePasswordFalse = "กรุณาลองใหม่ Password ผิด";
+    private String titleUserFalesString = "ชื่อผู้ใช้ผิดพลาด";
+    private String messageUserFalesString = "ไม่มีชื่อผู้ใช้ในฐานข้อมูลของเรา";
+    private String titlePasswordFalse = "รหัสผ่านผิดพลาด";
+    private String messagePasswordFalse = "กรุณาลองใหม่ คุณใส่รหัสผ่านผิด";
     private String urlDataWhereDriverID = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlan.php";
     private String urlDataWhereDriverIDanDate = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlanDtl.php";
     private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
