@@ -48,6 +48,7 @@ import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class DetailJob extends Activity implements View.OnClickListener {
     //Explicit
@@ -58,7 +59,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
     private Button arrivalButton, takeImgButton, confirmButton, signatureButton, contractButton, backButton, startLoadButton, finLoadButton;
     private MyConstant myConstant = new MyConstant();
     private String[] loginStrings, containerStrings, quantityStrings;
-    private String planDtl2_Id, planDateString, pathFirstImageString, pathSecondImageString, pathThirdImageString, driverUserNameString, getTimeDate,storeLatString,storeLngString,storeRadiusString;
+    private String planDtl2_Id, planIdString, planDateString, pathFirstImageString, pathSecondImageString, pathThirdImageString, driverUserNameString, getTimeDate,storeLatString,storeLngString,storeRadiusString;
     private LocationManager locationManager;
     private Criteria criteria;
     private Bitmap firstBitmap = null;
@@ -98,6 +99,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
         loginStrings = getIntent().getStringArrayExtra("Login");
         planDtl2_Id = getIntent().getStringExtra("planDtl2_id");
         planDateString = getIntent().getStringExtra("Date");
+        planIdString = getIntent().getStringExtra("PlanId");
         driverUserNameString = loginStrings[2];
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -507,6 +509,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 intentSign.putExtra("Login", loginStrings);
                 intentSign.putExtra("PlanDtl", planDtl2_Id);
                 intentSign.putExtra("Date", planDateString);
+                intentSign.putExtra("PlanId", planIdString);
                 startActivity(intentSign);
                 break;
             case R.id.button9: //Confirm
@@ -525,7 +528,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                     synUploadImage.execute();
 
                     SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
-                    synUpdateStatus.execute();
+                    synUpdateStatus.execute(startLoadString,finLoadString);
 
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.err_conf1), Toast.LENGTH_SHORT).show();
@@ -554,28 +557,40 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.button13: //Back
+                Log.d("TAG", "Press Back Date ==> " + planDateString);
                 Intent backIntent = new Intent(DetailJob.this, ServiceActivity.class);
                 backIntent.putExtra("Login", loginStrings);
                 backIntent.putExtra("Date", planDateString);
-                backIntent.putExtra("PlanId", "");
+                backIntent.putExtra("PlanId", planIdString);
                 backIntent.putExtra("TruckNo", "");
                 startActivity(backIntent);
                 finish();
                 break;
 
             case R.id.button5:
-                startLoadString = DateFormat.getDateTimeInstance().format(new Date());
+                SimpleDateFormat format= new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault());
+
+                startLoadString = format.format(new Date());
+
+                Log.d("Tag", "Start Date ==> " + startLoadString);
                 Toast.makeText(this, getResources().getString(R.string.start_load), Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.button4:
-                finLoadString = DateFormat.getDateTimeInstance().format(new Date());
-                startLoadButton.setVisibility(View.GONE);
-                finLoadButton.setVisibility(View.GONE);
-                confirmButton.setVisibility(View.VISIBLE);
-                signatureButton.setVisibility(View.VISIBLE);
+                if (startLoadString.length() == 0){
 
-                Toast.makeText(this, getResources().getString(R.string.fin_load), Toast.LENGTH_SHORT).show();
+                }else{
+                    SimpleDateFormat format2= new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault());
+                    finLoadString =  format2.format(new Date());
+                    startLoadButton.setVisibility(View.GONE);
+                    finLoadButton.setVisibility(View.GONE);
+                    confirmButton.setVisibility(View.VISIBLE);
+                    signatureButton.setVisibility(View.VISIBLE);
+                    Log.d("Tag", "Finish Date ==> " + finLoadString);
+
+                    Toast.makeText(this, getResources().getString(R.string.fin_load), Toast.LENGTH_SHORT).show();
+
+                }
                 break;
 
         }//switch
@@ -607,7 +622,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 Intent intent = new Intent(DetailJob.this, ServiceActivity.class);
                 intent.putExtra("Login", loginStrings);
                 intent.putExtra("Date", planDateString);
-                intent.putExtra("PlanId", "");
+                intent.putExtra("PlanId", planIdString);
                 intent.putExtra("TruckNo", "");
                 startActivity(intent);
 
@@ -631,7 +646,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         .add("isAdd", "true")
                         .add("PlanDtl2_ID", planDtl2_Id)
                         .add("Driver_Name", loginStrings[2])
-//                        .add("Load_Date",strings[0])
+                        .add("Start_Load_Date",strings[0])
+                        .add("Fin_Load_Date",strings[1])
                         .build();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(myConstant.getUrlUpdateStatus()).post(requestBody).build();

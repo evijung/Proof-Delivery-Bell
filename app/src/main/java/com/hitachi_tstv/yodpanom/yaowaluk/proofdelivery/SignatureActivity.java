@@ -54,7 +54,7 @@ public class SignatureActivity extends Activity {
     File mypath;
     MyConstant myConstant;
     private String[] loginStrings;
-    private String plan_id, sign_name, planDateString;
+    private String plan2_id, sign_name, planDateString, planIdString;
 
 
     private String uniqueId;
@@ -74,9 +74,11 @@ public class SignatureActivity extends Activity {
 //        current = uniqueId + ".png";
 //        mypath = new File(directory, current);
 
-        plan_id = getIntent().getStringExtra("PlanDtl");
+        plan2_id = getIntent().getStringExtra("PlanDtl");
         loginStrings = getIntent().getStringArrayExtra("Login");
         planDateString = getIntent().getStringExtra("Date");
+        planIdString = getIntent().getStringExtra("PlanId");
+        
         myConstant = new MyConstant();
 
 
@@ -170,10 +172,10 @@ public class SignatureActivity extends Activity {
             mUploadedFileName = uploadImageUtils.getRandomFileName();
 
             Log.d("Data", mUploadedFileName);
-            Log.d("Data", plan_id);
+            Log.d("Data", plan2_id);
             Log.d("Data", bitmap.toString());
             Log.d("Data", myConstant.getUrlSaveImage());
-            final String result = uploadImageUtils.uploadFile(mUploadedFileName, myConstant.getUrlSaveImage(), bitmap, plan_id, "S");
+            final String result = uploadImageUtils.uploadFile(mUploadedFileName, myConstant.getUrlSaveImage(), bitmap, plan2_id, "S");
             Log.d("TAG", "Do in back after save:-->" + result);
 
             if (result == "NOK") {
@@ -183,7 +185,7 @@ public class SignatureActivity extends Activity {
                     OkHttpClient okHttpClient = new OkHttpClient();
                     RequestBody requestBody = new FormEncodingBuilder()
                             .add("isAdd", "true")
-                            .add("PlanDtl2_ID", plan_id)
+                            .add("PlanDtl2_ID", plan2_id)
                             .add("Sign_Name", signNameString)
                             .add("File_Name", mUploadedFileName)
                             .add("File_Path", result)

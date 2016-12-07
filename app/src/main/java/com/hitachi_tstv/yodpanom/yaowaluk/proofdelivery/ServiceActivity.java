@@ -49,7 +49,7 @@ public class ServiceActivity extends Activity {
     private boolean aBoolean = true;
     private String[] workSheetStrings, storeNameStrings,
             planArrivalTimeStrings, planDtl2_idStrings, truckIdStrings;
-    private String driverChooseString, dateChooseString, truckString;
+    private String driverChooseString, dateChooseString, truckString ,dateString, planString;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,12 +109,14 @@ public class ServiceActivity extends Activity {
             iconImageView.setImageResource(res);
         }
 
-        if (driverChooseString.length() != 0) {
-            aBoolean = false;
+        if (driverChooseString.length() == 0) {
         } else {
             //From Main Activity
+            aBoolean = false;
 
         }
+        Log.d("Tag", "Date bool ==> " + aBoolean);
+        Log.d("Tag", "Date lenght ==> " + driverChooseString.length());
 
         //Show Name
         nameDriverTextView.setText(loginStrings[1]);
@@ -197,8 +199,10 @@ public class ServiceActivity extends Activity {
 
                 if (aBoolean) {
 
-                    //True Not Click on Button
+                    //Not Click on Button
                     jobListButton.setText(getResources().getString(R.string.joblist) + " : " + planDateStrings[0]);
+                    dateString = planDateStrings[0];
+                    planString = planIdStrings[0];
                     idDriverTextView.setText(truckIdStrings[0]);
                     createDetailList(planIdStrings[0]);
 
@@ -207,7 +211,8 @@ public class ServiceActivity extends Activity {
                     // From Job List View
                     jobListButton.setText(getResources().getString(R.string.joblist) + " : " + dateChooseString);
                     idDriverTextView.setText(truckString);
-
+                    dateString = dateChooseString;
+                    planString = driverChooseString;
                     createDetailList(driverChooseString);
                 }
 
@@ -373,10 +378,12 @@ public class ServiceActivity extends Activity {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Log.d("TAG", "Date String ==> " + dateString);
                         Intent intent = new Intent(ServiceActivity.this,DetailJob.class);
                         intent.putExtra("Login", loginStrings);
                         intent.putExtra("planDtl2_id", planDtl2_idStrings[i]);
-                        intent.putExtra("Date", planDateStrings);
+                        intent.putExtra("Date", dateString);
+                        intent.putExtra("PlanId", planString);
                         startActivity(intent);
                         finish();
                     }
