@@ -364,8 +364,9 @@ public class ServiceActivity extends Activity {
                 for (int i=0;i<jsonArray.length();i++) {
 
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    Log.d("TAG", "Store Name ==> " + jsonObject.getString("store_name"));
                     workSheetStrings[i] = jsonObject.getString("work_sheet_no");
-                    storeNameStrings[i] = jsonObject.getString("store_nameEng");
+                    storeNameStrings[i] = jsonObject.getString("store_name");
                     planArrivalTimeStrings[i] = jsonObject.getString("plan_arrivalTime");
                     planDtl2_idStrings[i] = jsonObject.getString("planDtl2_id");
 

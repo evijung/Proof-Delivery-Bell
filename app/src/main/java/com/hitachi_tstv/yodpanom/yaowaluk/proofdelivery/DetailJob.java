@@ -45,6 +45,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -193,6 +194,72 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 Log.d("12octV6", "e onPost ==> " + e);
             }
             Log.d("12octV6", "JSON ==> " + s);
+        }
+    }
+
+    private class SynUpdateLoad extends AsyncTask<String, Void, String> {
+        private Context context;
+        private String option;
+
+        public SynUpdateLoad(Context context, String option) {
+            this.context = context;
+            this.option = option;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d("Tag", "On Post JSON ==> " + s);
+            if (s.equals("OK")) {
+                if (option == "start") {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, getResources().getString(R.string.start_load), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                } else {
+
+                    startLoadButton.setVisibility(View.GONE);
+                    finLoadButton.setVisibility(View.GONE);
+                    confirmButton.setVisibility(View.VISIBLE);
+                    signatureButton.setVisibility(View.VISIBLE);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, getResources().getString(R.string.fin_load), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, getResources().getString(R.string.save_incomp), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try{
+                OkHttpClient okHttpClient = new OkHttpClient();
+                RequestBody requestBody = new FormEncodingBuilder()
+                        .add("isAdd", "true")
+                        .add("PlanDtl2_ID", planDtl2_Id)
+                        .add("Driver_Name", loginStrings[2])
+                        .add("option", option)
+                        .build();
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.url(myConstant.getUrlUpdateLoad()).post(requestBody).build();
+                Response response = okHttpClient.newCall(request).execute();
+                return response.body().string();
+            } catch (IOException e) {
+                return "NOK2";
+            }
         }
     }
 
@@ -492,13 +559,13 @@ public class DetailJob extends Activity implements View.OnClickListener {
                     float km = (float) result;
                     float m = Float.parseFloat(String.format("%.2f", km)) * 1000;
 
-                    if (m < Float.parseFloat(storeRadiusString)) {
+//                    if (m < Float.parseFloat(storeRadiusString)) {
                         SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
                         synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
 
-                    } else {
-                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
-                    }
+//                    } else {
+//                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
+//                    }
 
 
 
@@ -528,7 +595,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                     synUploadImage.execute();
 
                     SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
-                    synUpdateStatus.execute(startLoadString,finLoadString);
+                    synUpdateStatus.execute();
 
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.err_conf1), Toast.LENGTH_SHORT).show();
@@ -567,28 +634,31 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 finish();
                 break;
 
-            case R.id.button5:
-                SimpleDateFormat format= new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault());
+            case R.id.button5://Start Load
+                //SimpleDateFormat format= new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault());
 
-                startLoadString = format.format(new Date());
+//                startLoadString = format.format(new Date());
 
-                Log.d("Tag", "Start Date ==> " + startLoadString);
-                Toast.makeText(this, getResources().getString(R.string.start_load), Toast.LENGTH_SHORT).show();
+//                Log.d("Tag", "Start Date ==> " + startLoadString);
+//                Toast.makeText(this, getResources().getString(R.string.start_load), Toast.LENGTH_SHORT).show();
+                startLoadString = "start";
+                SynUpdateLoad synUpdateLoad = new SynUpdateLoad(this, startLoadString);
+                synUpdateLoad.execute();
+
                 break;
 
             case R.id.button4:
                 if (startLoadString.length() == 0){
 
                 }else{
-                    SimpleDateFormat format2= new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault());
-                    finLoadString =  format2.format(new Date());
-                    startLoadButton.setVisibility(View.GONE);
-                    finLoadButton.setVisibility(View.GONE);
-                    confirmButton.setVisibility(View.VISIBLE);
-                    signatureButton.setVisibility(View.VISIBLE);
-                    Log.d("Tag", "Finish Date ==> " + finLoadString);
+//                    SimpleDateFormat format2= new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault());
+//                    finLoadString =  format2.format(new Date());
+                    finLoadString = "finish";
+                    SynUpdateLoad synUpdateLoad2 = new SynUpdateLoad(this, finLoadString);
+                    synUpdateLoad2.execute();
+//                    Log.d("Tag", "Finish Date ==> " + finLoadString);
 
-                    Toast.makeText(this, getResources().getString(R.string.fin_load), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, getResources().getString(R.string.fin_load), Toast.LENGTH_SHORT).show();
 
                 }
                 break;
@@ -646,8 +716,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         .add("isAdd", "true")
                         .add("PlanDtl2_ID", planDtl2_Id)
                         .add("Driver_Name", loginStrings[2])
-                        .add("Start_Load_Date",strings[0])
-                        .add("Fin_Load_Date",strings[1])
                         .build();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(myConstant.getUrlUpdateStatus()).post(requestBody).build();
@@ -780,7 +848,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 //Show Text
                 jobNoTextView.setText(getResources().getString(R.string.job) + " : " + jsonObject.getString("work_sheet_no"));
                 storeCodeTextView.setText(getResources().getString(R.string.store_code) + " : " + jsonObject.getString("store_code"));
-                storeNameTextView.setText(getResources().getString(R.string.store_name) + " : " + jsonObject.getString("store_nameEng"));
+                storeNameTextView.setText(getResources().getString(R.string.store_name) + " : " + jsonObject.getString("store_name"));
                 arrivalTextView.setText(getResources().getString(R.string.time) + " : " + jsonObject.getString("plan_arrivalDateTime"));
                 intentToCallTextView.setText(getResources().getString(R.string.call) + " : " + jsonObject.getString("store_tel"));
 

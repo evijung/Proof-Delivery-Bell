@@ -27,7 +27,12 @@ public class MyConstant{
     private String urlSaveImagePath = "http://service.eternity.co.th/TmsPXD/app/CenterService/setPicturePath.php";
     private String urlSaveSignPath = "http://service.eternity.co.th/TmsPXD/app/CenterService/setSignPath.php";
     private String urlUpdateStatus = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateStatusConfirm.php";
+    private String urlUpdateLoad = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateLoad.php";
     private String urlDriverPicture = "http://service.eternity.co.th/TmsPXD/app/MasterData/driver/avatar/";
+
+    public String getUrlUpdateLoad() {
+        return urlUpdateLoad;
+    }
 
     public String getUrlDriverPicture() {
         return urlDriverPicture;

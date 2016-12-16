@@ -213,7 +213,7 @@ public class SignatureActivity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "Add Signature Successful!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getResources().getText(R.string.save_comp), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -221,7 +221,7 @@ public class SignatureActivity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, "Add Signature Unsuccessful!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, getResources().getText(R.string.save_incomp), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
