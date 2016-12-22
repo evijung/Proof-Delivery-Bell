@@ -29,7 +29,7 @@
     <string name="add_img_incomp">เสียใจด้วย บันทึกรูปภาพผิดพลาด กรุณาติดต่อผู้ดูแล</string>
     <string name="call">เบอร์โทร</string>
     <string name="err_gps1">ผิดพลาดไม่ได้รับ Lat/Long</string>
-    <string name="err_conf1">กรุณาถ่ายภาพให้ครบก่อนบันทึก</string>
+    <string name="err_conf1">กรุณาถ่ายภาพก่อนบันทึก</string>
     <string name="err_gps2">กรุณากดเมื่อถึงจุดหมายปลายทางแล้ว</string>
     <string name="err_not_name">กรุณาใส่ชื่อของคุณ</string>
     <string name="have_space_detail">กรุณากรอกข้อมูลให้ครบทุกช่อง!!</string>

@@ -58,7 +58,9 @@ public class UploadImageUtils {
             Log.d("Name", "Name ==> " + fileNameInServer + "\"" + lineEnd);
 
 
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap = Bitmap.createScaledBitmap(bitmap, 500, 666, false);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
             byte[] data = baos.toByteArray();
 

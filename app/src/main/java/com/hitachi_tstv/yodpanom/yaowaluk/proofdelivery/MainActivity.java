@@ -1,15 +1,21 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +46,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (!checkIfAlreadyhavePermission()) {
+            requestForSpecificPermission();
+        }
 
         Configuration configuration = new Configuration();
         configuration.locale = new Locale("th");
@@ -47,11 +56,18 @@ public class MainActivity extends Activity {
 
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
+        String device = Build.DEVICE;
+        BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
+        String deviceName = myDevice.getName();
         int version = Build.VERSION.SDK_INT;
+        TelephonyManager telemamanger = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        String getSimSerialNumber = telemamanger.getSimSerialNumber();
         String versionRelease = Build.VERSION.RELEASE;
 
         Log.e("MyActivity", "manufacturer " + manufacturer
                 + " \n model " + model
+                + " \n device " + deviceName
+                + " \n phone " + getSimSerialNumber
                 + " \n version " + version
                 + " \n versionRelease " + versionRelease
         );
@@ -97,6 +113,34 @@ public class MainActivity extends Activity {
 
 
     }   //Main method
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 101:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //granted
+                } else {
+                    //not granted
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void requestForSpecificPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+    }
+
+    private boolean checkIfAlreadyhavePermission() {
+        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     //Create Inner Class
     private class SynUser extends AsyncTask<String, Void, String> {

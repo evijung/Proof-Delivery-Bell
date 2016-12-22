@@ -144,13 +144,25 @@
             android:gravity="center">
 
             <ImageView
+                android:layout_width="@dimen/picture_width"
+                android:layout_height="@dimen/picture_height"
+                app:srcCompat="@drawable/picture"
+                android:id="@+id/imageView6"
+                android:background="#cbc9c9"
+                android:layout_margin="@dimen/mini_margin"
+                android:padding="2dp" />
+
+            <ImageView
                 app:srcCompat="@drawable/picture"
                 android:background="#cbc9c9"
                 android:padding="2dp"
                 android:id="@+id/imageView5"
-                android:layout_margin="@dimen/mini_margin"
-                android:layout_width="@dimen/picture_width"
-                android:layout_height="@dimen/picture_height" />
+                android:layout_width="57dp"
+                android:layout_height="@dimen/picture_height"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="@dimen/mini_margin"
+                android:layout_marginRight="@dimen/mini_margin"
+                android:layout_marginTop="@dimen/mini_margin" />
 
             <ImageView
                 app:srcCompat="@drawable/picture"
@@ -185,6 +197,14 @@
                 android:background="@drawable/sign" />
 
             <Button
+                android:layout_width="0dp"
+                android:layout_height="42dp"
+                android:id="@+id/button4"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/mini_margin"
+                android:background="@drawable/saveimgth" />
+
+            <Button
                 android:layout_height="42dp"
                 android:id="@+id/button9"
                 android:background="@drawable/submit"
@@ -194,7 +214,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <!--LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -214,7 +234,7 @@
                 android:layout_weight="1"
                 android:layout_margin="5dp"
                 android:background="@drawable/fin" />
-        </LinearLayout>
+        </LinearLayout-->
 
         <LinearLayout
             android:orientation="horizontal"
