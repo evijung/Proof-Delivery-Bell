@@ -60,9 +60,20 @@ public class UploadImageUtils {
 
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap = Bitmap.createScaledBitmap(bitmap, 500, 666, false);
+            if (bitmap.getWidth() > bitmap.getHeight()) {
+                bitmap = Bitmap.createScaledBitmap(bitmap, 1600, 1200, false);
+            } else {
+                bitmap = Bitmap.createScaledBitmap(bitmap, 1200, 1600, false);
+
+            }
             bitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
             byte[] data = baos.toByteArray();
+
+            data[13] = 00000001;
+            data[14] = 00000001;
+            data[15] = (byte) 244;
+            data[16] =  00000001;
+            data[17] = (byte) 244;
 
             Log.d("Bitmap", "Bitmap ==> " + bitmap);
 

@@ -60,14 +60,14 @@ public class MainActivity extends Activity {
         BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
         String deviceName = myDevice.getName();
         int version = Build.VERSION.SDK_INT;
-        TelephonyManager telemamanger = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-        String getSimSerialNumber = telemamanger.getSimSerialNumber();
+//        TelephonyManager telemamanger = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+//        String getSimSerialNumber = telemamanger.getSimSerialNumber();
         String versionRelease = Build.VERSION.RELEASE;
 
         Log.e("MyActivity", "manufacturer " + manufacturer
                 + " \n model " + model
                 + " \n device " + deviceName
-                + " \n phone " + getSimSerialNumber
+//                + " \n phone " + getSimSerialNumber
                 + " \n version " + version
                 + " \n versionRelease " + versionRelease
         );

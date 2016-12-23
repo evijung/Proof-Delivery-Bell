@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
@@ -652,17 +653,25 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         float km = (float) result;
                         float m = Float.parseFloat(String.format("%.2f", km)) * 1000;
 
-//                    if (m < Float.parseFloat(storeRadiusString)) {
+                    if (m < Float.parseFloat(storeRadiusString)) {
 
                         SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, fourthBitmap);
                         synUploadImage.execute();
 
+                        if (sendStatus) {
+
+                        } else {
+                            sendStatus = false;
+                            pathFourthImageString = null;
+                            fourthImgSendABoolean = true;
+                        }
+
                         SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
                         synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
 
-//                    } else {
-//                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
-//                    }
+                    } else {
+                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
+                    }
                 }
 
 
@@ -680,10 +689,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.button9: //Confirm
-                Log.d("Tag1", "First ==> " + pathFirstImageString);
-                Log.d("Tag2", "Second ==> " + pathSecondImageString);
-                Log.d("Tag3", "Third ==> " + pathThirdImageString);
-                Log.d("Tag4", "Fourth ==> " + pathFourthImageString);
                 SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
                 synUpdateStatus.execute();
 
@@ -719,6 +724,14 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.button4:// Send Picture
+                Log.d("TAG", "Path bool ==> " + (pathFirstImageString == null));
+                Log.d("TAG", "Path bool ==> " + (pathSecondImageString == null));
+                Log.d("TAG", "Path bool ==> " + (pathThirdImageString == null));
+
+                if (pathFirstImageString == null && pathSecondImageString == null && pathThirdImageString == null) {
+                    Toast.makeText(this, getResources().getString(R.string.err_conf1), Toast.LENGTH_SHORT).show();
+                }
+
                 if (pathFirstImageString != null) {
                     SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, firstBitmap);
                     synUploadImage.execute();
@@ -730,7 +743,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         firstImgSendABoolean = true;
                         checkPictureBeforeConfirm();
                     }
-                } else if (pathSecondImageString != null) {
+                }
+                if (pathSecondImageString != null) {
                     SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, secondBitmap);
                     synUploadImage.execute();
                     if (sendStatus) {
@@ -741,7 +755,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         secondImgSendABoolean = true;
                         checkPictureBeforeConfirm();
                     }
-                } else if (pathThirdImageString != null) {
+                }
+                if (pathThirdImageString != null) {
                     SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, thirdBitmap);
                     synUploadImage.execute();
                     if (sendStatus) {
@@ -752,8 +767,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         thirdImgSendABoolean = true;
                         checkPictureBeforeConfirm();
                     }
-                } else {
-                    Toast.makeText(this, getResources().getString(R.string.err_conf1), Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -790,6 +803,10 @@ public class DetailJob extends Activity implements View.OnClickListener {
     }// onClick
 
     private void checkPictureBeforeConfirm(){
+        Log.d("TAG", "1 bool ==> " + firstImgSendABoolean);
+        Log.d("TAG", "2 bool ==> " + secondImgSendABoolean);
+        Log.d("TAG", "3 bool ==> " + thirdImgSendABoolean);
+
         if (firstImgSendABoolean && secondImgSendABoolean && thirdImgSendABoolean && fourthImgSendABoolean) {
             sendButton.setVisibility(View.GONE);
             confirmButton.setVisibility(View.VISIBLE);
@@ -864,7 +881,10 @@ public class DetailJob extends Activity implements View.OnClickListener {
         private Bitmap bitmap;
         private UploadImageUtils uploadImageUtils;
         private String mUploadedFileName;
-        private ProgressDialog progressDialog;
+        ProgressDialog progress;
+        Runnable progressRunnable;
+        Handler pdCanceller;
+
 
         public SynUploadImage(Context context, Bitmap bitmap) {
             this.context = context;
@@ -875,10 +895,22 @@ public class DetailJob extends Activity implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progress = new ProgressDialog(context);
+            progress.setCancelable(false);
+            progress.setMessage(getResources().getString(R.string.waiting));
+            progress.show();
 
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setCancelable(false);
-            progressDialog.show(context,null,getResources().getString(R.string.waiting));
+            progressRunnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    progress.cancel();
+                }
+            };
+
+//            progressDialog = new ProgressDialog(context);
+//            progressDialog.setCancelable(false);
+//            progressDialog.show(context,null,getResources().getString(R.string.waiting));
         }
 
         @Override
@@ -926,12 +958,20 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         Toast.makeText(context, getResources().getString(R.string.add_img_comp), Toast.LENGTH_SHORT).show();
                     }
                 });
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
 
-                } else {
-                    progressDialog.dismiss();
-                }
+                pdCanceller = new Handler();
+                pdCanceller.postDelayed(progressRunnable, 3000);
+//                if (progressDialog != null && progressDialog.isShowing()) {
+//
+//                    Log.d("TAG", "A1");
+//                    progressDialog.dismiss();
+//
+//                } else {
+//                    progressDialog.dismiss();
+//
+//                    Log.d("TAG", "B1");
+//
+//                }
 
             } else {
                 runOnUiThread(new Runnable() {
@@ -940,12 +980,19 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         Toast.makeText(context, getResources().getString(R.string.add_img_incomp), Toast.LENGTH_SHORT).show();
                     }
                 });
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
 
-                } else {
-                    progressDialog.dismiss();
-                }
+                pdCanceller = new Handler();
+                pdCanceller.postDelayed(progressRunnable, 3000);
+//                if (progressDialog != null && progressDialog.isShowing()) {
+//                    progressDialog.dismiss();
+//
+//                    Log.d("TAG", "A2");
+//
+//                } else {
+//                    progressDialog.dismiss();
+//
+//                    Log.d("TAG", "B2");
+//                }
             }
 
         }
