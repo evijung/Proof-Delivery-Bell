@@ -46,14 +46,19 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Check Permission
         if (!checkIfAlreadyhavePermission()) {
             requestForSpecificPermission();
         }
 
+        //Set Locale to TH
         Configuration configuration = new Configuration();
         configuration.locale = new Locale("th");
         getResources().updateConfiguration(configuration, null);
 
+
+        //Get Device detail
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
         String device = Build.DEVICE;
@@ -114,6 +119,7 @@ public class MainActivity extends Activity {
 
     }   //Main method
 
+    //Some thing to do when request permission
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -129,10 +135,12 @@ public class MainActivity extends Activity {
         }
     }
 
+    //What is permission be request
     private void requestForSpecificPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH,Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
     }
 
+    //Check the permission is already have
     private boolean checkIfAlreadyhavePermission() {
         int result = ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS);
         if (result == PackageManager.PERMISSION_GRANTED) {

@@ -689,8 +689,49 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.button9: //Confirm
-                SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
-                synUpdateStatus.execute();
+//                String strLat = "Unknown";
+//                String strLng = "Unknown";
+//                setupLocation();
+//                Location networkLocation = requestLocation(LocationManager.NETWORK_PROVIDER, "No Internet");
+//                if (networkLocation != null) {
+//                    strLat = String.format("%.7f", networkLocation.getLatitude());
+//                    strLng = String.format("%.7f", networkLocation.getLongitude());
+//                }
+//
+//                Location gpsLocation = requestLocation(LocationManager.GPS_PROVIDER, "No GPS card");
+//                if (gpsLocation != null) {
+//                    strLat = String.format("%.7f", gpsLocation.getLatitude());
+//                    strLng = String.format("%.7f", gpsLocation.getLongitude());
+//                }
+//
+//
+//                if (strLat.equals("Unknown") && strLng.equals("Unknown")) {
+//                    Toast.makeText(this, getResources().getString(R.string.err_gps1), Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Log.d("13OctV1", " ++++++++++Latitude.-> " + strLat + " Longitude.-> " + strLng);
+//
+//                    double lat1, lat2, lng1, lng2;
+//                    lat1 = Double.parseDouble(strLat);
+//                    lng1 = Double.parseDouble(strLng);
+//                    lat2 = Double.parseDouble(storeLatString);
+//                    lng2 = Double.parseDouble(storeLngString);
+//
+//                    Log.d("TAG", "lat1 ==> " + lat1 + " lng1 ==> " + lng1 + " lat2 ==> " + lat2 + " lng2 ==> " + lng2);
+//
+//                    double result = getMeterFromLatLong(lat1, lat2, lng1, lng2);
+//                    float km = (float) result;
+//                    float m = Float.parseFloat(String.format("%.2f", km)) * 1000;
+//
+//                    if (m < Float.parseFloat(storeRadiusString)) {
+
+
+                        SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
+                        synUpdateStatus.execute();
+
+//                    } else {
+//                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
 
                 break;
 

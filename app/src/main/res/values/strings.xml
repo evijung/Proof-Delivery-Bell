@@ -26,11 +26,11 @@
     <string name="save">บันทึก</string>
     <string name="place">สาขา</string>
     <string name="err_gps1">ผิดพลาดไม่ได้รับ Lat/Long </string>
-    <string name="err_gps2">กรุณากดเมื่อถึงจุดหมายปลายทางแล้ว</string>
+    <string name="err_gps2">กรุณากดเมื่ออยู่ที่จุดหมายปลายทางแล้ว</string>
     <string name="err_conf1">กรุณาถ่ายภาพก่อนบันทึก</string>
     <string name="save_comp">ยินดีด้วย บันทึกสำเร็จแล้ว!!</string>
     <string name="save_incomp">เสียใจด้วย บันทึกผิดพลาด กรุณาติดต่อผู้ดูแล</string>
-    <string name="waiting">รอสักครู่นะ...</string>
+    <string name="waiting">กรุณารอสักครู่...</string>
     <string name="loading">กำลังโหลด...</string>
     <string name="store_code">เลขที่สาขา</string>
     <string name="store_name">ชื่อสาขา</string>
