@@ -47,8 +47,7 @@ public class ServiceActivity extends Activity {
     private MyConstant myConstant = new MyConstant();
     private String[] planDateStrings, cnt_storeStrings, planIdStrings;
     private boolean aBoolean = true;
-    private String[] workSheetStrings, storeNameStrings,
-            planArrivalTimeStrings, planDtl2_idStrings, truckIdStrings;
+    private String[] workSheetStrings, storeNameStrings, planArrivalTimeStrings, planDtl2_idStrings, truckIdStrings;
     private String driverChooseString, dateChooseString, truckString ,dateString, planString;
 
     @Override
@@ -116,7 +115,7 @@ public class ServiceActivity extends Activity {
 
         }
         Log.d("Tag", "Date bool ==> " + aBoolean);
-        Log.d("Tag", "Date lenght ==> " + driverChooseString.length());
+        Log.d("Tag", "Date length ==> " + driverChooseString.length());
 
         //Show Name
         nameDriverTextView.setText(loginStrings[1]);
