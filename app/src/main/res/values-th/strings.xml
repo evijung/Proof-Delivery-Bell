@@ -46,4 +46,6 @@
     <string name="user_false_detail">ไม่มีชื่อผู้ใช้ในฐานข้อมูลของเรา</string>
     <string name="user_false_title">ชื่อผู้ใช้ผิดพลาด</string>
     <string name="waiting">รอสักครู่นะ...</string>
+    <string name="Qty">จำนวน</string>
+    <string name="confirm">เรียบร้อย</string>
 </resources>

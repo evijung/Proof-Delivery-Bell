@@ -11,12 +11,13 @@ public class MyConstant{
     //Explicit
     private int iconAnInt = R.drawable.warning48; // Image for icon 48x48
     private String link = "http://service.eternity.co.th/";
-    private String project = "TmsPXD";
+    private String project = "TmsPXDTest";
+    private String imgLink = link + project + "/app/CenterService/";
     private String titleHaveSpaceString = "มีช่องว่าง";
     private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง!!";
     private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username","drv_pic","gender"};
     private String titleUserFalesString = "ชื่อผู้ใช้ผิดพลาด";
-    private String messageUserFalesString = "ไม่มีชื่อผู้ใช้ในฐานข้อมูลของเรา";
+    private String messageUserFalesString = "ไม่มีชื่อผู้ใช้ในฐysานข้อมูลของเรา";
     private String titlePasswordFalse = "รหัสผ่านผิดพลาด";
     private String messagePasswordFalse = "กรุณาลองใหม่ คุณใส่รหัสผ่านผิด";
     private String urlUserString = link+project+"/app/CenterService/getUser.php";
@@ -31,8 +32,22 @@ public class MyConstant{
     private String urlUpdateStatus = link+project+"/app/CenterService/updateStatusConfirm.php";
     private String urlUpdateLoad = link+project+"/app/CenterService/updateLoad.php";
     private String urlDriverPicture = link+project+"/app/MasterData/driver/avatar/";
-    private String urlDataContainer = link+project+"";
-    private String urlSaveReturnCont = link+project+"";
+    private String urlDataContainer = link+project+"/app/CenterService/getContainer.php";
+    private String urlSaveReturnCont = link+project+"/app/CenterService/setReturnQuantity.php";
+    private String urlGetReturnContainerQuantity = link+project+"/app/CenterService/getReturnContainerQuantity.php";
+    private String urlGetPlanImg = link+project+"/app/CenterService/getPlanImg.php";
+
+    public String getImgLink() {
+        return imgLink;
+    }
+
+    public String getUrlGetPlanImg() {
+        return urlGetPlanImg;
+    }
+
+    public String getUrlGetReturnContainerQuantity() {
+        return urlGetReturnContainerQuantity;
+    }
 
     public String getUrlDataContainer() {
         return urlDataContainer;

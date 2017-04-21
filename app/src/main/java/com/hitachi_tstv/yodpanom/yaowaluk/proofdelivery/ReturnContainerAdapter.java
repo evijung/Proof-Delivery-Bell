@@ -30,14 +30,15 @@ import static android.content.ContentValues.TAG;
 
 public class ReturnContainerAdapter extends BaseAdapter {
     private Context context;
-    private String[] containerTypeStrings, imageTextStrings;
+    private String[] containerTypeStrings, imageTextStrings, conIdStrings;
     private ImageView pictureImageView;
     private TextView containerTextView;
 
-    public ReturnContainerAdapter(Context context, String[] containerTypeStrings, String[] imageTextStrings) {
+    public ReturnContainerAdapter(Context context, String[] containerTypeStrings, String[] imageTextStrings, String[] conIdStrings) {
         this.context = context;
         this.containerTypeStrings = containerTypeStrings;
         this.imageTextStrings = imageTextStrings;
+        this.conIdStrings = conIdStrings;
     }
 
     @Override
@@ -58,6 +59,7 @@ public class ReturnContainerAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        Log.d("Tag1", "Layout ==> " + layoutInflater);
         View view1 = layoutInflater.inflate(R.layout.return_cont_list_view, viewGroup, false);
 
         //bind widget
@@ -78,7 +80,7 @@ public class ReturnContainerAdapter extends BaseAdapter {
     private class SynLoadImage extends AsyncTask<String, Void, Bitmap> {
         private ImageView view;
         private Context context;
-        private ProgressDialog progressDialog;
+       // private ProgressDialog progressDialog;
         private String urlString;
 
         public SynLoadImage(ImageView view, Context context, String urlString) {
@@ -87,14 +89,14 @@ public class ReturnContainerAdapter extends BaseAdapter {
             this.urlString = urlString;
         }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage(context.getResources().getString(R.string.loading));
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            progressDialog = new ProgressDialog(context);
+//            progressDialog.setMessage(context.getResources().getString(R.string.loading));
+//            progressDialog.setCancelable(false);
+//            progressDialog.show();
+//        }
 
         @Override
         protected Bitmap doInBackground(String... strings) {
@@ -103,10 +105,10 @@ public class ReturnContainerAdapter extends BaseAdapter {
                 InputStream inputStream = new java.net.URL(urlString).openStream();
                 bitmap = BitmapFactory.decodeStream(inputStream);
             } catch (MalformedURLException e) {
-                progressDialog.dismiss();
+//                progressDialog.dismiss();
                 e.printStackTrace();
             } catch (IOException e) {
-                progressDialog.dismiss();
+//                progressDialog.dismiss();
                 e.printStackTrace();
             }
             return bitmap;
@@ -115,7 +117,7 @@ public class ReturnContainerAdapter extends BaseAdapter {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             view.setImageBitmap(bitmap);
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
         }
     }
 }

@@ -42,11 +42,14 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -58,11 +61,12 @@ public class DetailJob extends Activity implements View.OnClickListener {
     private ListView listView;
     private ImageView firstImageView, secondImageView, thirdImageView, fourthImageView;
     private Uri firstUri, secondUri, thirdUri, fourthUri;
-    private Button arrivalButton, takeImgButton, confirmButton, signatureButton, contractButton, backButton, startLoadButton, finLoadButton, sendButton;
+    private Button arrivalButton, takeImgButton, returnButton, confirmButton, signatureButton, contractButton, backButton, startLoadButton, finLoadButton, sendButton;
     private MyConstant myConstant = new MyConstant();
     private String[] loginStrings, containerStrings, quantityStrings;
-    private String planDtl2_Id, planIdString, planDateString, pathFirstImageString, pathSecondImageString, pathThirdImageString, pathFourthImageString, driverUserNameString, getTimeDate,storeLatString,storeLngString,storeRadiusString;
-    private boolean firstImgSendABoolean, secondImgSendABoolean, thirdImgSendABoolean, fourthImgSendABoolean, sendStatus;
+    private String dbFirstImgString, dbSecondImgString, dbThirdImgString, dbArriveImgString, dbFirstPathString, dbSecondPathString, dbThirdPathString, dbArrivePathString;
+    private String planDtl2_Id, storeCodeString, storeNameString, planIdString, flagString, planDateString, pathFirstImageString, pathSecondImageString, pathThirdImageString, pathFourthImageString, driverUserNameString, getTimeDate, storeLatString, storeLngString, storeRadiusString;
+    private boolean sendStatus;
     private LocationManager locationManager;
     private Criteria criteria;
     private Bitmap firstBitmap = null;
@@ -85,22 +89,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
         bindWidget();
 
         //Set Value
-        firstImgSendABoolean = false;
-        secondImgSendABoolean = false;
-        thirdImgSendABoolean = false;
-        fourthImgSendABoolean = false;
         sendStatus = false;
 
-        //Set Invisible The Button
-        firstImageView.setVisibility(View.GONE);
-        secondImageView.setVisibility(View.GONE);
-        thirdImageView.setVisibility(View.GONE);
-        confirmButton.setVisibility(View.GONE);
-        signatureButton.setVisibility(View.GONE);
-        sendButton.setVisibility(View.GONE);
-//        takeImgButton.setVisibility(View.GONE);
-//        startLoadButton.setVisibility(View.GONE);
-//        finLoadButton.setVisibility(View.GONE);
 
         int picRes = R.drawable.picture;
         firstImageView.setImageResource(picRes);
@@ -132,14 +122,13 @@ public class DetailJob extends Activity implements View.OnClickListener {
         thirdImageView.setOnClickListener(DetailJob.this);
         fourthImageView.setOnClickListener(DetailJob.this);
         arrivalButton.setOnClickListener(DetailJob.this);
-//        takeImgButton.setOnClickListener(DetailJob.this);
         confirmButton.setOnClickListener(DetailJob.this);
         signatureButton.setOnClickListener(DetailJob.this);
         contractButton.setOnClickListener(DetailJob.this);
         backButton.setOnClickListener(DetailJob.this);
         sendButton.setOnClickListener(DetailJob.this);
-//        startLoadButton.setOnClickListener(DetailJob.this);
-//        finLoadButton.setOnClickListener(DetailJob.this);
+        returnButton.setOnClickListener(DetailJob.this);
+
 
     }//Main Method
 
@@ -158,6 +147,131 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
     }
 
+    private class SynGetImgName extends AsyncTask<String, Void, String> {
+
+        private Context context;
+
+        public SynGetImgName(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                Log.d("TAG", "PlanDtl_2 ==> " + strings[0]);
+                OkHttpClient okHttpClient = new OkHttpClient();
+                RequestBody requestBody = new FormEncodingBuilder()
+                        .add("isAdd", "true")
+                        .add("planDtl2_id", strings[0]).build();
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.url(myConstant.getUrlGetPlanImg()).post(requestBody).build();
+                Response response = okHttpClient.newCall(request).execute();
+                return response.body().string();
+            } catch (IOException e) {
+                Log.d("TAG", "e doInBack SynGetImgName ==> " + e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d("TAG", "JSON SynGetImgName ==> " + s);
+
+            try {
+                JSONArray jsonArray = new JSONArray(s);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    if (jsonObject.getString("planFileName").contains("first.jpg")) {
+                        dbFirstImgString = jsonObject.getString("planFileName");
+                        dbFirstPathString = jsonObject.getString("planFilePath");
+                        String link = myConstant.getImgLink().toString() + dbFirstPathString.toString();
+
+                        SynLoadImage synLoadImage = new SynLoadImage(firstImageView, context, link);
+                        synLoadImage.execute();
+
+
+                    } else if (jsonObject.getString("planFileName").contains("second.jpg")) {
+                        dbSecondImgString = jsonObject.getString("planFileName");
+                        dbSecondPathString = jsonObject.getString("planFilePath");
+                        String link = myConstant.getImgLink().toString() + dbSecondPathString.toString();
+
+                        SynLoadImage synLoadImage = new SynLoadImage(secondImageView, context, link);
+                        synLoadImage.execute();
+
+                    } else if (jsonObject.getString("planFileName").contains("third.jpg")) {
+                        dbThirdImgString = jsonObject.getString("planFileName");
+                        dbThirdPathString = jsonObject.getString("planFilePath");
+                        String link = myConstant.getImgLink().toString() + dbThirdPathString.toString();
+
+                        SynLoadImage synLoadImage = new SynLoadImage(thirdImageView, context, link);
+                        synLoadImage.execute();
+
+                    } else if (jsonObject.getString("planFileName").contains("arrive.jpg")) {
+                        dbArriveImgString = jsonObject.getString("planFileName");
+                        dbArrivePathString = jsonObject.getString("planFilePath");
+                        String link = myConstant.getImgLink().toString() + dbArrivePathString.toString();
+
+                        SynLoadImage synLoadImage = new SynLoadImage(fourthImageView, context, link);
+                        synLoadImage.execute();
+
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private class SynLoadImage extends AsyncTask<String, Void, Bitmap> {
+        private ImageView view;
+        private Context context;
+        private ProgressDialog progressDialog;
+        private String urlString;
+
+        public SynLoadImage(ImageView view, Context context, String urlString) {
+            this.view = view;
+            this.context = context;
+            this.urlString = urlString;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage(getResources().getString(R.string.loading));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            Bitmap bitmap = null;
+            try {
+                InputStream inputStream = new java.net.URL(urlString).openStream();
+                bitmap = BitmapFactory.decodeStream(inputStream);
+
+                Log.d("TAG", "bitmap SynLoadImage ==> " + bitmap);
+            } catch (MalformedURLException e) {
+                progressDialog.dismiss();
+                e.printStackTrace();
+            } catch (IOException e) {
+                progressDialog.dismiss();
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            view.setImageBitmap(bitmap);
+            progressDialog.dismiss();
+        }
+    }
+
+
     private class SynContainList extends AsyncTask<String, Void, String> {
         //Explicit
         private Context context;
@@ -171,7 +285,9 @@ public class DetailJob extends Activity implements View.OnClickListener {
         protected String doInBackground(String... strings) {
             try {
                 OkHttpClient okHttpClient = new OkHttpClient();
-                RequestBody requestBody = new FormEncodingBuilder().add("isAdd", "true").add("planDtl2_id", strings[1]).build();
+                RequestBody requestBody = new FormEncodingBuilder()
+                        .add("isAdd", "true")
+                        .add("planDtl2_id", strings[1]).build();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(strings[0]).post(requestBody).build();
                 Response response = okHttpClient.newCall(request).execute();
@@ -211,74 +327,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
         }
     }
 
-//    private class SynUpdateLoad extends AsyncTask<String, Void, String> {
-//        private Context context;
-//        private String option;
-//
-//        public SynUpdateLoad(Context context, String option) {
-//            this.context = context;
-//            this.option = option;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//            Log.d("Tag", "On Post JSON ==> " + s);
-//            if (s.equals("OK")) {
-//                if (option == "start") {
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Toast.makeText(context, getResources().getString(R.string.start_load), Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//
-//                } else {
-//
-//                    startLoadButton.setVisibility(View.GONE);
-//                    finLoadButton.setVisibility(View.GONE);
-//                    confirmButton.setVisibility(View.VISIBLE);
-//                    signatureButton.setVisibility(View.VISIBLE);
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Toast.makeText(context, getResources().getString(R.string.fin_load), Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//
-//                }
-//            } else {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        Toast.makeText(context, getResources().getString(R.string.save_incomp), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... strings) {
-//            try{
-//                OkHttpClient okHttpClient = new OkHttpClient();
-//                RequestBody requestBody = new FormEncodingBuilder()
-//                        .add("isAdd", "true")
-//                        .add("PlanDtl2_ID", planDtl2_Id)
-//                        .add("Driver_Name", loginStrings[2])
-//                        .add("option", option)
-//                        .build();
-//                Request.Builder builder = new Request.Builder();
-//                Request request = builder.url(myConstant.getUrlUpdateLoad()).post(requestBody).build();
-//                Response response = okHttpClient.newCall(request).execute();
-//                return response.body().string();
-//            } catch (IOException e) {
-//                return "NOK2";
-//            }
-//        }
-//    }
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)  {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch (requestCode) {
@@ -290,17 +340,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
             case 1://From Select Image First
 
                 if (resultCode == RESULT_OK) {
-
-//                    Bitmap photo = (Bitmap) data.getExtras().get("data");
-//                    firstImageView.setImageBitmap(photo);
-//                    Uri uri = data.getData();
-//                    if (version >= Build.VERSION_CODES.KITKAT) {
-//
-//                        pathFirstImageString = myFindPathImageOverKitkat(firstUri);
-//                    } else {
-//
-//                        pathFirstImageString = myFindPathImage(firstUri);
-//                    }
                     pathFirstImageString = firstUri.getPath().toString();
                     Log.d("12octV5", "Path First ==> " + pathFirstImageString);
                     try {
@@ -315,9 +354,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         e.printStackTrace();
                     }
 
-//                     firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
-
-//                     firstImageView.setImageURI(firstUri);
                 }
                 break;
             case 2:
@@ -337,33 +373,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         e.printStackTrace();
                     }
 
-
-//                    Uri uri = data.getData();
-//                    if (version >= Build.VERSION_CODES.KITKAT) {
-//
-//                        pathSecondImageString = myFindPathImageOverKitkat(uri);
-//                    } else {
-//
-//                        pathSecondImageString = myFindPathImage(uri);
-//                    }
-//                    Log.d("12octV5", "Path Second ==> " + pathSecondImageString);
-//                    try {
-//                        secondBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-//                        if (secondBitmap.getHeight() < secondBitmap.getWidth()) {
-//                            secondBitmap = rotateBitmap(secondBitmap);
-//                        }
-//                        Log.d("Tag", "Height ==> " + secondBitmap.getHeight() + " , Width ==> " + secondBitmap.getWidth());
-//
-//
-//                        secondImageView.setImageBitmap(secondBitmap);
-//
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-
-                    // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
-
-                    // firstImageView.setImageURI(uri);
                 }
                 break;
             case 3:
@@ -382,31 +391,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-
-//                    Uri uri = data.getData();
-//                    if (version >= Build.VERSION_CODES.KITKAT) {
-//
-//                        pathThirdImageString = myFindPathImageOverKitkat(uri);
-//                    } else {
-//
-//                        pathThirdImageString = myFindPathImage(uri);
-//                    }
-//                    Log.d("12octV5", "Path Third ==> " + pathThirdImageString);
-//
-//                    try {
-//                        thirdBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-//                        if (thirdBitmap.getHeight() < thirdBitmap.getWidth()) {
-//                            thirdBitmap = rotateBitmap(thirdBitmap);
-//                        }
-//                        thirdImageView.setImageBitmap(thirdBitmap);
-//
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-
-                    // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
-
-                    // firstImageView.setImageURI(uri);
                 }
                 break;
             case 4:
@@ -425,97 +409,15 @@ public class DetailJob extends Activity implements View.OnClickListener {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
-
-//                    Uri uri = data.getData();
-//                    if (version >= Build.VERSION_CODES.KITKAT) {
-//
-//                        pathThirdImageString = myFindPathImageOverKitkat(uri);
-//                    } else {
-//
-//                        pathThirdImageString = myFindPathImage(uri);
-//                    }
-//                    Log.d("12octV5", "Path Third ==> " + pathThirdImageString);
-//
-//                    try {
-//                        thirdBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
-//                        if (thirdBitmap.getHeight() < thirdBitmap.getWidth()) {
-//                            thirdBitmap = rotateBitmap(thirdBitmap);
-//                        }
-//                        thirdImageView.setImageBitmap(thirdBitmap);
-//
-//                    } catch (FileNotFoundException e) {
-//                        e.printStackTrace();
-//                    }
-
-                    // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
-
-                    // firstImageView.setImageURI(uri);
                 }
                 break;
         }
 
     }
 
-//    private String myFindPathImage(Uri uri) {
-//        String result = null;
-//        String[] strings = {MediaStore.Images.Media.DATA};
-//        Cursor cursor = getContentResolver().query(uri,
-//                strings, null, null, null);
-//
-//        if (cursor != null) {
-//            cursor.moveToFirst();
-//            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
-//            result = cursor.getString(index);
-//            cursor.close();
-//        } else {
-//            result = uri.getPath();
-//        }
-//
-//        cursor.close();
-//        return result;
-//
-//    }
-//
-//    private String myFindPathImageOverKitkat(Uri uri) {
-//
-//        String wholeId = null;
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-//            wholeId = DocumentsContract.getDocumentId(uri);
-//        }
-//        String id = wholeId.split(":")[1];
-//
-//        String result = null;
-//        String[] strings = {MediaStore.Images.Media.DATA};
-//
-//        String sel = MediaStore.Images.Media._ID + "=?";
-//
-//        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//                strings, sel, new String[]{id}, null);
-//
-//        int columnIndex = cursor.getColumnIndex(strings[0]);
-//        if (cursor.moveToFirst()) {
-//            result = cursor.getString(columnIndex);
-//        }
-//        cursor.close();
-////        if (cursor != null) {
-////            cursor.moveToFirst();
-////            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
-////            result = cursor.getString(index);
-////            cursor.close();
-////        } else {
-////            result = uri.getPath();
-////        }
-//
-//        Log.d("Tag", "Result ==> " + result + ", URI ==> " + uri);
-//        Log.d("Tag", "Cursor ==> " + cursor.toString());
-//
-//        return result;
-//
-//    }
-
     private double getMeterFromLatLong(double lat1, double lat2, double lng1, double lng2) {
         Math math = null;
-        double result,diffLat,diffLong;
+        double result, diffLat, diffLong;
         lat1 = lat1 * (math.PI / 180);
         lat2 = lat2 * (math.PI / 180);
         lng1 = lng1 * (math.PI / 180);
@@ -533,88 +435,45 @@ public class DetailJob extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imageView5: //First
-                if (firstImgSendABoolean) {
+                File originalFile1 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "first.png");
 
-                } else {
-//                loadDateString = DateFormat.getDateTimeInstance().format(new Date());
-                    File originalFile1 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "first.png");
-
-                    Intent cameraIntent1 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    firstUri = Uri.fromFile(originalFile1);
-                    Log.d("TAG", "Path 1 " + firstUri);
-                    cameraIntent1.putExtra(MediaStore.EXTRA_OUTPUT, firstUri);
-                    startActivityForResult(cameraIntent1, 1);
-
-//                Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
-//                intent1.setType("image/*");
-//                startActivityForResult(Intent.createChooser(intent1, "Please Choose Photo"), 1);
-
-                }
+                Intent cameraIntent1 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                firstUri = Uri.fromFile(originalFile1);
+                Log.d("TAG", "Path 1 " + firstUri);
+                cameraIntent1.putExtra(MediaStore.EXTRA_OUTPUT, firstUri);
+                startActivityForResult(cameraIntent1, 1);
 
                 break;
             case R.id.imageView4: //Second
-                if (secondImgSendABoolean) {
+                File originalFile2 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "second.png");
 
-                } else {
-                    File originalFile2 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "second.png");
-
-                    Intent cameraIntent2 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    secondUri = Uri.fromFile(originalFile2);
-                    Log.d("TAG", "Path 2 " +   secondUri);
-                    cameraIntent2.putExtra(MediaStore.EXTRA_OUTPUT, secondUri);
-                    startActivityForResult(cameraIntent2, 2);
-
-//                Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
-//                intent2.setType("image/*");
-//                startActivityForResult(Intent.createChooser(intent2, "Please Choose Photo"), 2);
-
-                }
+                Intent cameraIntent2 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                secondUri = Uri.fromFile(originalFile2);
+                Log.d("TAG", "Path 2 " + secondUri);
+                cameraIntent2.putExtra(MediaStore.EXTRA_OUTPUT, secondUri);
+                startActivityForResult(cameraIntent2, 2);
 
                 break;
             case R.id.imageView3: //Third
-                if (thirdImgSendABoolean) {
+                File originalFile3 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "third.png");
 
-                } else {
-                    File originalFile3 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "third.png");
-
-                    Intent cameraIntent3 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    thirdUri = Uri.fromFile(originalFile3);
-                    Log.d("TAG", "Path 3 " + thirdUri);
-                    cameraIntent3.putExtra(MediaStore.EXTRA_OUTPUT, thirdUri);
-                    startActivityForResult(cameraIntent3, 3);
-
-//                Intent intent3 = new Intent(Intent.ACTION_GET_CONTENT);
-//                intent3.setType("image/*");
-//                startActivityForResult(Intent.createChooser(intent3, "Please Choose Photo"), 3);
-
-                }
+                Intent cameraIntent3 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                thirdUri = Uri.fromFile(originalFile3);
+                Log.d("TAG", "Path 3 " + thirdUri);
+                cameraIntent3.putExtra(MediaStore.EXTRA_OUTPUT, thirdUri);
+                startActivityForResult(cameraIntent3, 3);
 
                 break;
             case R.id.imageView6://Fourth
-                if (fourthImgSendABoolean) {
+                File originalFile4 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "arrive.png");
 
-                } else {
-                    File originalFile4 = new File(Environment.getExternalStorageDirectory() + "/DCIM/", "fourth.png");
+                Intent cameraIntent4 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                fourthUri = Uri.fromFile(originalFile4);
+                Log.d("TAG", "Path 4 " + fourthUri);
+                cameraIntent4.putExtra(MediaStore.EXTRA_OUTPUT, fourthUri);
+                startActivityForResult(cameraIntent4, 4);
 
-                    Intent cameraIntent4 = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    fourthUri = Uri.fromFile(originalFile4);
-                    Log.d("TAG", "Path 4 " + fourthUri);
-                    cameraIntent4.putExtra(MediaStore.EXTRA_OUTPUT, fourthUri);
-                    startActivityForResult(cameraIntent4, 4);
-
-    //                Intent intent3 = new Intent(Intent.ACTION_GET_CONTENT);
-    //                intent3.setType("image/*");
-    //                startActivityForResult(Intent.createChooser(intent3, "Please Choose Photo"), 3);
-
-                }
                 break;
-
-//            case R.id.button6: //Take Image
-//
-//                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-//                startActivityForResult(intent, 0);
-//
-//                break;
 
             case R.id.button7: //Arrival
                 if (pathFourthImageString == "" || pathFourthImageString == null) {
@@ -653,9 +512,9 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         float km = (float) result;
                         float m = Float.parseFloat(String.format("%.2f", km)) * 1000;
 
-                    if (m < Float.parseFloat(storeRadiusString)) {
+//                    if (m < Float.parseFloat(storeRadiusString)) {
 
-                        SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, fourthBitmap);
+                        SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, fourthBitmap, "arrive.jpg");
                         synUploadImage.execute();
 
                         if (sendStatus) {
@@ -663,17 +522,15 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         } else {
                             sendStatus = false;
                             pathFourthImageString = null;
-                            fourthImgSendABoolean = true;
                         }
 
                         SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
                         synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
 
-                    } else {
-                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
+//                    }
                     }
-                }
-
 
 
                 }
@@ -725,8 +582,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
 //                    if (m < Float.parseFloat(storeRadiusString)) {
 
 
-                        SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
-                        synUpdateStatus.execute();
+                    SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
+                    synUpdateStatus.execute();
 
 //                    } else {
 //                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
@@ -735,18 +592,23 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
                 break;
 
+            case R.id.button14:
+                Intent returnContIntent = new Intent(DetailJob.this, ReturnContainerActivity.class);
+                returnContIntent.putExtra("Login", loginStrings);
+                returnContIntent.putExtra("PlanDtl", planDtl2_Id);
+                returnContIntent.putExtra("Date", planDateString);
+                returnContIntent.putExtra("PlanId", planIdString);
+                returnContIntent.putExtra("StoreCode", storeCodeString);
+                returnContIntent.putExtra("StoreName", storeNameString);
+                startActivity(returnContIntent);
+
+                break;
+
             case R.id.button10: //Call
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
                 String phoneNo = "tel:" + intentToCallTextView.getText().toString();
                 callIntent.setData(Uri.parse(phoneNo));
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
                 startActivity(callIntent);
@@ -774,85 +636,38 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 }
 
                 if (pathFirstImageString != null) {
-                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, firstBitmap);
+                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, firstBitmap, "first.jpg");
                     synUploadImage.execute();
                     if (sendStatus) {
 
                     } else {
                         sendStatus = false;
                         pathFirstImageString = null;
-                        firstImgSendABoolean = true;
-                        checkPictureBeforeConfirm();
                     }
                 }
                 if (pathSecondImageString != null) {
-                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, secondBitmap);
+                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, secondBitmap, "second.jpg");
                     synUploadImage.execute();
                     if (sendStatus) {
 
                     } else {
                         sendStatus = false;
                         pathSecondImageString = null;
-                        secondImgSendABoolean = true;
-                        checkPictureBeforeConfirm();
                     }
                 }
                 if (pathThirdImageString != null) {
-                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, thirdBitmap);
+                    SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, thirdBitmap, "third.jpg");
                     synUploadImage.execute();
                     if (sendStatus) {
 
                     } else {
                         sendStatus = false;
                         pathThirdImageString = null;
-                        thirdImgSendABoolean = true;
-                        checkPictureBeforeConfirm();
                     }
                 }
                 break;
-
-//            case R.id.button5://Start Load
-//                //SimpleDateFormat format= new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault());
-//
-////                startLoadString = format.format(new Date());
-//
-////                Log.d("Tag", "Start Date ==> " + startLoadString);
-////                Toast.makeText(this, getResources().getString(R.string.start_load), Toast.LENGTH_SHORT).show();
-//                startLoadString = "start";
-//                SynUpdateLoad synUpdateLoad = new SynUpdateLoad(this, startLoadString);
-//                synUpdateLoad.execute();
-//
-//                break;
-
-//            case R.id.button4:
-//                if (startLoadString.length() == 0){
-//
-//                }else{
-////                    SimpleDateFormat format2= new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.getDefault());
-////                    finLoadString =  format2.format(new Date());
-//                    finLoadString = "finish";
-//                    SynUpdateLoad synUpdateLoad2 = new SynUpdateLoad(this, finLoadString);
-//                    synUpdateLoad2.execute();
-////                    Log.d("Tag", "Finish Date ==> " + finLoadString);
-//
-////                    Toast.makeText(this, getResources().getString(R.string.fin_load), Toast.LENGTH_SHORT).show();
-//
-//                }
-//                break;
-
         }//switch
     }// onClick
-
-    private void checkPictureBeforeConfirm(){
-        Log.d("TAG", "1 bool ==> " + firstImgSendABoolean);
-        Log.d("TAG", "2 bool ==> " + secondImgSendABoolean);
-        Log.d("TAG", "3 bool ==> " + thirdImgSendABoolean);
-
-        if (firstImgSendABoolean && secondImgSendABoolean && thirdImgSendABoolean && fourthImgSendABoolean) {
-            sendButton.setVisibility(View.GONE);
-            confirmButton.setVisibility(View.VISIBLE);
-        }
-    }
 
     private class SynUpdateStatus extends AsyncTask<String, Void, String> {
         //Explicit
@@ -868,6 +683,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
             Log.d("TAG", "JSON_Upload ==> " + s);
             boolean b = (s.equals("OK"));
+            final String text = s.toString();
             Log.d("Tag", "Bool ==> " + b);
             if (s.equals("OK")) {
                 runOnUiThread(new Runnable() {
@@ -889,7 +705,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(context, getResources().getString(R.string.save_incomp), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -899,6 +715,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
         @Override
         protected String doInBackground(String... strings) {
             try {
+                Log.d("Tag", "PlanDtl2_ID ==> " + planDtl2_Id + " :: Driver_Name ==> " + loginStrings[2]);
+
                 OkHttpClient okHttpClient = new OkHttpClient();
                 RequestBody requestBody = new FormEncodingBuilder()
                         .add("isAdd", "true")
@@ -926,12 +744,11 @@ public class DetailJob extends Activity implements View.OnClickListener {
         Runnable progressRunnable;
         Handler pdCanceller;
 
-
-        public SynUploadImage(Context context, Bitmap bitmap) {
+        public SynUploadImage(Context context, Bitmap bitmap, String mUploadedFileName) {
             this.context = context;
             this.bitmap = bitmap;
+            this.mUploadedFileName = mUploadedFileName;
         }
-
 
         @Override
         protected void onPreExecute() {
@@ -949,17 +766,13 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 }
             };
 
-//            progressDialog = new ProgressDialog(context);
-//            progressDialog.setCancelable(false);
-//            progressDialog.show(context,null,getResources().getString(R.string.waiting));
         }
 
         @Override
         protected String doInBackground(Void... voids) {
             uploadImageUtils = new UploadImageUtils();
-            mUploadedFileName = uploadImageUtils.getRandomFileName();
             final String result = uploadImageUtils.uploadFile(mUploadedFileName, myConstant.getUrlSaveImage(), bitmap, planDtl2_Id, "P");
-            Log.d("TAG", "Do in back after save:-->" + result);
+            Log.d("TAG", "Do in back after save:-->" + mUploadedFileName);
             if (result == "NOK") {
                 return "NOK1";
             } else {
@@ -1002,17 +815,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
                 pdCanceller = new Handler();
                 pdCanceller.postDelayed(progressRunnable, 3000);
-//                if (progressDialog != null && progressDialog.isShowing()) {
-//
-//                    Log.d("TAG", "A1");
-//                    progressDialog.dismiss();
-//
-//                } else {
-//                    progressDialog.dismiss();
-//
-//                    Log.d("TAG", "B1");
-//
-//                }
 
             } else {
                 runOnUiThread(new Runnable() {
@@ -1024,16 +826,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
                 pdCanceller = new Handler();
                 pdCanceller.postDelayed(progressRunnable, 3000);
-//                if (progressDialog != null && progressDialog.isShowing()) {
-//                    progressDialog.dismiss();
-//
-//                    Log.d("TAG", "A2");
-//
-//                } else {
-//                    progressDialog.dismiss();
-//
-//                    Log.d("TAG", "B2");
-//                }
             }
 
         }
@@ -1051,7 +843,9 @@ public class DetailJob extends Activity implements View.OnClickListener {
         protected String doInBackground(String... strings) {
             try {
                 OkHttpClient okHttpClient = new OkHttpClient();
-                RequestBody requestBody = new FormEncodingBuilder().add("isAdd", "true").add("planDtl2_id", strings[1]).build();
+                RequestBody requestBody = new FormEncodingBuilder()
+                        .add("isAdd", "true")
+                        .add("planDtl2_id", strings[1]).build();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(strings[0]).post(requestBody).build();
                 Response response = okHttpClient.newCall(request).execute();
@@ -1075,16 +869,59 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 JSONArray jsonArray = new JSONArray(s);
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
 
+                //Set Data
+                storeCodeString = jsonObject.getString("store_code");
+                storeNameString = jsonObject.getString("store_name");
+
                 //Show Text
                 jobNoTextView.setText(getResources().getString(R.string.job) + " : " + jsonObject.getString("work_sheet_no"));
-                storeCodeTextView.setText(getResources().getString(R.string.store_code) + " : " + jsonObject.getString("store_code"));
-                storeNameTextView.setText(getResources().getString(R.string.store_name) + " : " + jsonObject.getString("store_name"));
+                storeCodeTextView.setText(getResources().getString(R.string.store_code) + " : " + storeCodeString);
+                storeNameTextView.setText(getResources().getString(R.string.store_name) + " : " + storeNameString);
                 arrivalTextView.setText(getResources().getString(R.string.time) + " : " + jsonObject.getString("plan_arrivalDateTime"));
                 intentToCallTextView.setText(getResources().getString(R.string.call) + " : " + jsonObject.getString("store_tel"));
 
                 storeLatString = jsonObject.getString("store_lat");
                 storeLngString = jsonObject.getString("store_long");
                 storeRadiusString = jsonObject.getString("gps_radius");
+                flagString = jsonObject.getString("flagArrivaled");
+
+                Log.d("TAG", "Flag ==> " + flagString);
+
+                if (flagString.contains("Y")) {
+
+                    //Next Step to Button set 2 (Signature, Save Img, Confirm, Return Container)
+                    firstImageView.setVisibility(View.VISIBLE);
+                    secondImageView.setVisibility(View.VISIBLE);
+                    thirdImageView.setVisibility(View.VISIBLE);
+                    confirmButton.setVisibility(View.VISIBLE);
+                    signatureButton.setVisibility(View.VISIBLE);
+                    sendButton.setVisibility(View.VISIBLE);
+                    arrivalButton.setVisibility(View.GONE);
+                    backButton.setVisibility(View.GONE);
+                    returnButton.setVisibility(View.VISIBLE);
+
+                    fourthImageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+
+                    SynGetImgName synGetImgName = new SynGetImgName(context);
+                    synGetImgName.execute(planDtl2_Id);
+
+
+                } else {
+                    //Show Button set 1(Arrival and Back) //Set Invisible The Button
+                    firstImageView.setVisibility(View.GONE);
+                    secondImageView.setVisibility(View.GONE);
+                    thirdImageView.setVisibility(View.GONE);
+                    confirmButton.setVisibility(View.GONE);
+                    signatureButton.setVisibility(View.GONE);
+                    sendButton.setVisibility(View.GONE);
+//                    returnButton.setVisibility(View.GONE);
+
+                }
             } catch (Exception e) {
                 Log.d("12octV4", "e onPost ==> " + e);
             }
@@ -1105,14 +942,12 @@ public class DetailJob extends Activity implements View.OnClickListener {
         thirdImageView = (ImageView) findViewById(R.id.imageView3);
         fourthImageView = (ImageView) findViewById(R.id.imageView6);
         arrivalButton = (Button) findViewById(R.id.button7);
-//        takeImgButton = (Button) findViewById(R.id.button6);
         confirmButton = (Button) findViewById(R.id.button9);
         signatureButton = (Button) findViewById(R.id.button8);
         contractButton = (Button) findViewById(R.id.button10);
         backButton = (Button) findViewById(R.id.button13);
         sendButton = (Button) findViewById(R.id.button4);
-//        startLoadButton = (Button) findViewById(R.id.button5);
-//        finLoadButton = (Button) findViewById(R.id.button4);
+        returnButton = (Button) findViewById(R.id.button14);
     }
 
     private class SynGPStoServer extends AsyncTask<String, Void, String> {
@@ -1158,13 +993,20 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 firstImageView.setVisibility(View.VISIBLE);
                 secondImageView.setVisibility(View.VISIBLE);
                 thirdImageView.setVisibility(View.VISIBLE);
-//                startLoadButton.setVisibility(View.VISIBLE);
-//                takeImgButton.setVisibility(View.VISIBLE);
-//                finLoadButton.setVisibility(View.VISIBLE);
                 signatureButton.setVisibility(View.VISIBLE);
                 sendButton.setVisibility(View.VISIBLE);
+                returnButton.setVisibility(View.VISIBLE);
+                confirmButton.setVisibility(View.VISIBLE);
                 arrivalButton.setVisibility(View.GONE);
                 backButton.setVisibility(View.GONE);
+
+                fourthImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

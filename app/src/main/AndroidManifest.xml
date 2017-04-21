@@ -41,8 +41,9 @@
         <activity
             android:name=".SignatureActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ReturnContainer" />
-        <activity android:name=".ReturnContainerActivity"></activity>
+        <activity
+            android:name=".ReturnContainerActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

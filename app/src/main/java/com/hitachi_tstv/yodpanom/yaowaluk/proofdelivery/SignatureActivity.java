@@ -169,7 +169,7 @@ public class SignatureActivity extends Activity {
         @Override
         protected String doInBackground(Void... voids) {
             uploadImageUtils = new UploadImageUtils();
-            mUploadedFileName = uploadImageUtils.getRandomFileName();
+            mUploadedFileName = "signature.jpg";
 
             Log.d("Data", mUploadedFileName);
             Log.d("Data", plan2_id);

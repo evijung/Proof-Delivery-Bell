@@ -204,14 +204,6 @@
                 android:layout_margin="@dimen/mini_margin"
                 android:background="@drawable/saveimgth" />
 
-            <Button
-                android:layout_height="42dp"
-                android:id="@+id/button9"
-                android:background="@drawable/submit"
-                android:layout_margin="@dimen/mini_margin"
-                android:layout_width="0dp"
-                android:layout_weight="1" />
-
         </LinearLayout>
 
         <!--LinearLayout
@@ -250,11 +242,27 @@
                 android:layout_margin="@dimen/mini_margin" />
 
             <Button
+                android:id="@+id/button9"
+                android:layout_width="0dp"
+                android:layout_height="42dp"
+                android:layout_margin="@dimen/mini_margin"
+                android:layout_weight="1"
+                android:background="@drawable/submit" />
+
+            <Button
+                android:id="@+id/button14"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/button_height"
-                android:id="@+id/button13"
-                android:layout_weight="1"
                 android:layout_margin="@dimen/mini_margin"
+                android:layout_weight="1"
+                android:background="@drawable/return_con" />
+
+            <Button
+                android:id="@+id/button13"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_margin="@dimen/mini_margin"
+                android:layout_weight="1"
                 android:background="@drawable/btnback" />
         </LinearLayout>
 
