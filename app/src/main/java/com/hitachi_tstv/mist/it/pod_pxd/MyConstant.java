@@ -1,4 +1,4 @@
-package com.hitachi_tstv.mist.it.podhlc;
+package com.hitachi_tstv.mist.it.pod_pxd;
 
 /**
  * Created by musz on 10/11/2016.

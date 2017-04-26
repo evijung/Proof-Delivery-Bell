@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg"
     android:padding="@dimen/mini_margin"
-    tools:context="com.hitachi_tstv.mist.it.podhlc.ReturnContainerActivity">
+    tools:context="com.hitachi_tstv.mist.it.pod_pxd.ReturnContainerActivity">
 
     <TextView
         android:id="@+id/txtStoreCode"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hitachi_tstv.mist.it.podhlc">
+    package="com.hitachi_tstv.mist.it.pod_pxd">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.hitachi_tstv.mist.it.podhlc.MainActivity"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,19 +30,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.hitachi_tstv.mist.it.podhlc.ServiceActivity"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd.ServiceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hitachi_tstv.mist.it.podhlc.JobListView"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd.JobListView"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hitachi_tstv.mist.it.podhlc.DetailJob"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd.DetailJob"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hitachi_tstv.mist.it.podhlc.SignatureActivity"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd.SignatureActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hitachi_tstv.mist.it.podhlc.ReturnContainerActivity"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd.ReturnContainerActivity"
             android:screenOrientation="portrait" />
     </application>
 

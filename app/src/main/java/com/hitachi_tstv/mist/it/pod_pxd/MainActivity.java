@@ -1,4 +1,4 @@
-package com.hitachi_tstv.mist.it.podhlc;
+package com.hitachi_tstv.mist.it.pod_pxd;
 
 import android.Manifest;
 import android.app.Activity;
