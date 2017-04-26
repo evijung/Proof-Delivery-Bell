@@ -1,7 +1,4 @@
-package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
-
-import android.app.Application;
-import android.content.Context;
+package com.hitachi_tstv.mist.it.podhlc;
 
 /**
  * Created by musz on 10/11/2016.
@@ -14,8 +11,8 @@ public class MyConstant{
     private String project = "TmsPXDTest";
     private String imgLink = link + project + "/app/CenterService/";
     private String titleHaveSpaceString = "มีช่องว่าง";
-    private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง!!";
-    private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username","drv_pic","gender"};
+    private String messageHaveSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง!!";
+    private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username","drv_pic","gender","checkGPSIn","checkGPSOut"};
     private String titleUserFalesString = "ชื่อผู้ใช้ผิดพลาด";
     private String messageUserFalesString = "ไม่มีชื่อผู้ใช้ในฐysานข้อมูลของเรา";
     private String titlePasswordFalse = "รหัสผ่านผิดพลาด";
@@ -133,7 +130,7 @@ public class MyConstant{
         return titleHaveSpaceString;
     }
 
-    public String getMessageHaveeSpaceString() {
-        return messageHaveeSpaceString;
+    public String getMessageHaveSpaceString() {
+        return messageHaveSpaceString;
     }
 }//Main Class

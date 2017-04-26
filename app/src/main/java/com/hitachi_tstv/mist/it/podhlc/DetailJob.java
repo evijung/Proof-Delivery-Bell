@@ -1,12 +1,12 @@
-package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
+package com.hitachi_tstv.mist.it.podhlc;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -14,20 +14,19 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.content.IntentCompat;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -53,7 +52,6 @@ import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 public class DetailJob extends Activity implements View.OnClickListener {
     //Explicit
@@ -76,6 +74,36 @@ public class DetailJob extends Activity implements View.OnClickListener {
     private String startLoadString, finLoadString;
     private int version;
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.in_app_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                ComponentName componentName = intent.getComponent();
+                Intent backToMainIntent = IntentCompat.makeRestartActivityTask(componentName);
+                startActivity(backToMainIntent);
+                break;
+            case R.id.back:
+                Intent intent1 = new Intent(DetailJob.this, ServiceActivity.class);
+                intent1.putExtra("Login", loginStrings);
+                intent1.putExtra("Date", planDateString);
+                intent1.putExtra("PlanId", planIdString);
+                intent1.putExtra("TruckNo", "");
+                startActivity(intent1);
+
+                finish();
+                break;
+
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +133,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
         planIdString = getIntent().getStringExtra("PlanId");
         driverUserNameString = loginStrings[2];
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
         Date date = new Date();
         getTimeDate = dateFormat.format(date);
 
@@ -512,24 +540,40 @@ public class DetailJob extends Activity implements View.OnClickListener {
                         float km = (float) result;
                         float m = Float.parseFloat(String.format("%.2f", km)) * 1000;
 
-//                    if (m < Float.parseFloat(storeRadiusString)) {
+                        if (loginStrings[5].equals("Y")) {
+                            if (m < Float.parseFloat(storeRadiusString)) {
 
-                        SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, fourthBitmap, "arrive.jpg");
-                        synUploadImage.execute();
+                                SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, fourthBitmap, "arrive.jpg");
+                                synUploadImage.execute();
 
-                        if (sendStatus) {
+                                if (sendStatus) {
 
+                                } else {
+                                    sendStatus = false;
+                                    pathFourthImageString = null;
+                                }
+
+                                SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
+                                synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
+
+                            } else {
+                                Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
+                            }
                         } else {
-                            sendStatus = false;
-                            pathFourthImageString = null;
+                            SynUploadImage synUploadImage = new SynUploadImage(DetailJob.this, fourthBitmap, "arrive.jpg");
+                            synUploadImage.execute();
+
+                            if (sendStatus) {
+
+                            } else {
+                                sendStatus = false;
+                                pathFourthImageString = null;
+                            }
+
+                            SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
+                            synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
+
                         }
-
-                        SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
-                        synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
-
-//                    } else {
-//                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
-//                    }
                     }
 
 
@@ -546,49 +590,54 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.button9: //Confirm
-//                String strLat = "Unknown";
-//                String strLng = "Unknown";
-//                setupLocation();
-//                Location networkLocation = requestLocation(LocationManager.NETWORK_PROVIDER, "No Internet");
-//                if (networkLocation != null) {
-//                    strLat = String.format("%.7f", networkLocation.getLatitude());
-//                    strLng = String.format("%.7f", networkLocation.getLongitude());
-//                }
-//
-//                Location gpsLocation = requestLocation(LocationManager.GPS_PROVIDER, "No GPS card");
-//                if (gpsLocation != null) {
-//                    strLat = String.format("%.7f", gpsLocation.getLatitude());
-//                    strLng = String.format("%.7f", gpsLocation.getLongitude());
-//                }
-//
-//
-//                if (strLat.equals("Unknown") && strLng.equals("Unknown")) {
-//                    Toast.makeText(this, getResources().getString(R.string.err_gps1), Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Log.d("13OctV1", " ++++++++++Latitude.-> " + strLat + " Longitude.-> " + strLng);
-//
-//                    double lat1, lat2, lng1, lng2;
-//                    lat1 = Double.parseDouble(strLat);
-//                    lng1 = Double.parseDouble(strLng);
-//                    lat2 = Double.parseDouble(storeLatString);
-//                    lng2 = Double.parseDouble(storeLngString);
-//
-//                    Log.d("TAG", "lat1 ==> " + lat1 + " lng1 ==> " + lng1 + " lat2 ==> " + lat2 + " lng2 ==> " + lng2);
-//
-//                    double result = getMeterFromLatLong(lat1, lat2, lng1, lng2);
-//                    float km = (float) result;
-//                    float m = Float.parseFloat(String.format("%.2f", km)) * 1000;
-//
-//                    if (m < Float.parseFloat(storeRadiusString)) {
+                String strLat = "Unknown";
+                String strLng = "Unknown";
+                setupLocation();
+                Location networkLocation = requestLocation(LocationManager.NETWORK_PROVIDER, "No Internet");
+                if (networkLocation != null) {
+                    strLat = String.format("%.7f", networkLocation.getLatitude());
+                    strLng = String.format("%.7f", networkLocation.getLongitude());
+                }
+
+                Location gpsLocation = requestLocation(LocationManager.GPS_PROVIDER, "No GPS card");
+                if (gpsLocation != null) {
+                    strLat = String.format("%.7f", gpsLocation.getLatitude());
+                    strLng = String.format("%.7f", gpsLocation.getLongitude());
+                }
 
 
-                    SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
-                    synUpdateStatus.execute();
+                if (strLat.equals("Unknown") && strLng.equals("Unknown")) {
+                    Toast.makeText(this, getResources().getString(R.string.err_gps1), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.d("13OctV1", " ++++++++++Latitude.-> " + strLat + " Longitude.-> " + strLng);
 
-//                    } else {
-//                        Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
-//                    }
-//                }
+                    double lat1, lat2, lng1, lng2;
+                    lat1 = Double.parseDouble(strLat);
+                    lng1 = Double.parseDouble(strLng);
+                    lat2 = Double.parseDouble(storeLatString);
+                    lng2 = Double.parseDouble(storeLngString);
+
+                    Log.d("TAG", "lat1 ==> " + lat1 + " lng1 ==> " + lng1 + " lat2 ==> " + lat2 + " lng2 ==> " + lng2);
+
+                    double result = getMeterFromLatLong(lat1, lat2, lng1, lng2);
+                    float km = (float) result;
+                    float m = Float.parseFloat(String.format("%.2f", km)) * 1000;
+                    if (loginStrings[6].equals("Y") ) {
+                        if (m < Float.parseFloat(storeRadiusString)) {
+
+                            SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
+                            synUpdateStatus.execute();
+
+                        } else {
+                            Toast.makeText(this, getResources().getString(R.string.err_gps2), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        SynUpdateStatus synUpdateStatus = new SynUpdateStatus(DetailJob.this);
+                        synUpdateStatus.execute();
+                    }
+
+
+                }
 
                 break;
 

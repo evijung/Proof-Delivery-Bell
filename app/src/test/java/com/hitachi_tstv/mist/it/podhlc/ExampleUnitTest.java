@@ -1,4 +1,4 @@
-package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
+package com.hitachi_tstv.mist.it.podhlc;
 
 import org.junit.Test;
 

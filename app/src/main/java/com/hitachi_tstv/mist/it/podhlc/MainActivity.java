@@ -1,11 +1,10 @@
-package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
+package com.hitachi_tstv.mist.it.podhlc;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -13,9 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +22,6 @@ import android.widget.ImageView;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.Internal;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -101,7 +97,7 @@ public class MainActivity extends Activity {
                     MyAlert myAlert = new MyAlert(MainActivity.this);
                     myAlert.myErrorDialog(new MyConstant().getIconAnInt(),
                             new MyConstant().getTitleHaveSpaceString(),
-                            new MyConstant().getMessageHaveeSpaceString());
+                            new MyConstant().getMessageHaveSpaceString());
 
                 } else {
                     // No Space
@@ -156,7 +152,7 @@ public class MainActivity extends Activity {
 
         private Context context;
         private boolean aBoolean = true;//User false
-        private String[] logingStrings = new String[5]; //for User success login
+        private String[] logingStrings = new String[7]; //for User success login
         private String[] columLoginStrings;
         private String truePasswordString;
         private ProgressDialog progressDialog;
@@ -235,6 +231,11 @@ public class MainActivity extends Activity {
                             myConstant.getMessagePasswordFalse());
                 } else {
                     //password true
+                    Log.d("Tag", "Main checkGPSIn ==> " + logingStrings[5] + " checkGPSIn ==> " + logingStrings[6]);
+                    Boolean b1, b2;
+                    b1 = (logingStrings[5] == "Y");
+                    b2 = logingStrings[5].equals("Y");
+                    Log.d("Tag", "Main bool '==' ==> " + b1 + " 'equal' ==> " + b2);
                     Intent intent = new Intent(MainActivity.this, ServiceActivity.class);
                     intent.putExtra("Login", logingStrings);
                     intent.putExtra("Date", "");

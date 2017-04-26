@@ -52,4 +52,5 @@
     <string name="fin_load">บันทึกเวลาโหลดเสร็จเรียบร้อย</string>
     <string name="Qty">จำนวน</string>
     <string name="confirm">เรียบร้อย</string>
+    <string name="back">กลับ</string>
 </resources>
