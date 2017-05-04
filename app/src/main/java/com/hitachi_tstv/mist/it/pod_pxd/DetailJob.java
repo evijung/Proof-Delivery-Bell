@@ -968,7 +968,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                     confirmButton.setVisibility(View.GONE);
                     signatureButton.setVisibility(View.GONE);
                     sendButton.setVisibility(View.GONE);
-//                    returnButton.setVisibility(View.GONE);
+                    returnButton.setVisibility(View.GONE);
 
                 }
             } catch (Exception e) {

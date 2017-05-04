@@ -147,6 +147,7 @@ public class MainActivity extends Activity {
     }
 
     //Create Inner Class
+    //Class Load All User To Check
     private class SynUser extends AsyncTask<String, Void, String> {
         //Explicit
 
@@ -164,6 +165,7 @@ public class MainActivity extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            //Create Progress Bar
             progressDialog = new ProgressDialog(context);
             progressDialog.setMessage(getResources().getString(R.string.loading));
             progressDialog.setCancelable(false);
@@ -173,6 +175,7 @@ public class MainActivity extends Activity {
         @Override
         protected String doInBackground(String... params) {
             try {
+                //Send Param to Server File "getUser.php"
                 OkHttpClient okHttpClient = new OkHttpClient();
                 Request.Builder builder = new Request.Builder();
                 Request request = builder.url(params[0]).build();

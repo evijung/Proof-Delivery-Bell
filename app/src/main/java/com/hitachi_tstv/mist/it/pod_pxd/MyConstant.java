@@ -7,14 +7,16 @@ package com.hitachi_tstv.mist.it.pod_pxd;
 public class MyConstant{
     //Explicit
     private int iconAnInt = R.drawable.warning48; // Image for icon 48x48
-    private String link = "http://service.eternity.co.th/";
-    private String project = "TmsPXDTest";
+//    private String link = "http://service.eternity.co.th/";
+    private String link = "http://203.154.103.43/";
+//    private String project = "TmsPXDTest";
+    private String project = "TmsPXD";
     private String imgLink = link + project + "/app/CenterService/";
     private String titleHaveSpaceString = "มีช่องว่าง";
     private String messageHaveSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง!!";
     private String[] columLogin = new String[]{"drv_id", "drv_name", "drv_username","drv_pic","gender","checkGPSIn","checkGPSOut"};
     private String titleUserFalesString = "ชื่อผู้ใช้ผิดพลาด";
-    private String messageUserFalesString = "ไม่มีชื่อผู้ใช้ในฐysานข้อมูลของเรา";
+    private String messageUserFalesString = "ไม่มีชื่อผู้ใช้ในฐานข้อมูล";
     private String titlePasswordFalse = "รหัสผ่านผิดพลาด";
     private String messagePasswordFalse = "กรุณาลองใหม่ คุณใส่รหัสผ่านผิด";
     private String urlUserString = link+project+"/app/CenterService/getUser.php";
