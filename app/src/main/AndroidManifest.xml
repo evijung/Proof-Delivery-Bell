@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.hitachi_tstv.mist.it.pod_pxd.MainActivity"
+            android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,20 +30,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.hitachi_tstv.mist.it.pod_pxd.ServiceActivity"
+            android:name=".ServiceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hitachi_tstv.mist.it.pod_pxd.JobListView"
+            android:name=".JobListView"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hitachi_tstv.mist.it.pod_pxd.DetailJob"
+            android:name=".DetailJob"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hitachi_tstv.mist.it.pod_pxd.SignatureActivity"
+            android:name=".SignatureActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.hitachi_tstv.mist.it.pod_pxd.ReturnContainerActivity"
+            android:name=".ReturnContainerActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".JobManagementActivity" />
+        <activity android:name=".TripDateActivity"></activity>
     </application>
 
 </manifest>

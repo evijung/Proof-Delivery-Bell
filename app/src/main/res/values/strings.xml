@@ -3,6 +3,9 @@
 
     <string name="sign_in">เข้าสู่ระบบ</string>
     <string name="logout">ลงชื่อออก</string>
+    <string name="job_management">จัดการงาน</string>
+    <string name="start_job">เริ่มงาน</string>
+    <string name="finish_job">จบงาน</string>
     <string name="user">ชื่อผู้ใช้งาน</string>
     <string name="password">รหัสผ่าน</string>
     <string name="driver_name">ชื่อ</string>

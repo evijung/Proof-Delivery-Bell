@@ -97,10 +97,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 intent1.putExtra("PlanId", planIdString);
                 intent1.putExtra("TruckNo", "");
                 startActivity(intent1);
-
                 finish();
                 break;
-
         }
         return true;
     }

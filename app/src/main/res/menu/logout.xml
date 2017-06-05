@@ -4,6 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ServiceActivity">
 
+    <item android:title="@string/job_management"
+        android:id="@+id/job_management"
+        app:showAsAction="ifRoom"
+        />
+
     <item android:title="@string/logout"
         android:id="@+id/logout"
         app:showAsAction="ifRoom"

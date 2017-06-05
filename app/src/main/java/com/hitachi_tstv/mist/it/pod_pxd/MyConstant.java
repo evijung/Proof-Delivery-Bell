@@ -7,10 +7,10 @@ package com.hitachi_tstv.mist.it.pod_pxd;
 public class MyConstant{
     //Explicit
     private int iconAnInt = R.drawable.warning48; // Image for icon 48x48
-//    private String link = "http://service.eternity.co.th/";
-    private String link = "http://203.154.103.43/";
-//    private String project = "TmsPXDTest";
-    private String project = "TmsPXD";
+    private String link = "http://service.eternity.co.th/";
+//    private String link = "http://203.154.103.43/";
+    private String project = "TmsPXDTest";
+//    private String project = "TmsPXD";
     private String imgLink = link + project + "/app/CenterService/";
     private String titleHaveSpaceString = "มีช่องว่าง";
     private String messageHaveSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง!!";
