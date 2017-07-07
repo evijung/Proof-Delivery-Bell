@@ -1,4 +1,4 @@
-package com.hitachi_tstv.mist.it.pod_pxd;
+package com.hitachi_tstv.mist.it.pod_pxd_cl;
 
 import android.Manifest;
 import android.app.Activity;
@@ -19,14 +19,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.crashlytics.android.Crashlytics;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import io.fabric.sdk.android.Fabric;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Locale;
+
 
 public class MainActivity extends Activity {
 
@@ -35,12 +38,14 @@ public class MainActivity extends Activity {
     private Button button;
     private String userString, passwordString;
     private ImageView logoImageView;
+    String deviceName;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         //Check Permission
@@ -59,7 +64,7 @@ public class MainActivity extends Activity {
         String model = Build.MODEL;
         String device = Build.DEVICE;
         BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
-        String deviceName = myDevice.getName();
+        deviceName = myDevice.getName();
         int version = Build.VERSION.SDK_INT;
 //        TelephonyManager telemamanger = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 //        String getSimSerialNumber = telemamanger.getSimSerialNumber();
@@ -71,6 +76,7 @@ public class MainActivity extends Activity {
 //                + " \n phone " + getSimSerialNumber
                 + " \n version " + version
                 + " \n versionRelease " + versionRelease
+
         );
 
         // Bind Widget
@@ -81,6 +87,9 @@ public class MainActivity extends Activity {
 
         int res = R.drawable.htslogo;
         logoImageView.setImageResource(res);
+
+        // TODO: Move this to where you establish a user session
+        logUser();
 
 
         // Button controller
@@ -115,6 +124,12 @@ public class MainActivity extends Activity {
 
     }   //Main method
 
+    public void logUser() {
+        // TODO: Use the current user's information
+        // You can call any combination of these three methods
+        Crashlytics.setUserIdentifier(deviceName);
+    }
+
     //Some thing to do when request permission
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -139,11 +154,7 @@ public class MainActivity extends Activity {
     //Check the permission is already have
     private boolean checkIfAlreadyhavePermission() {
         int result = ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
+        return result == PackageManager.PERMISSION_GRANTED;
     }
 
     //Create Inner Class
@@ -259,8 +270,5 @@ public class MainActivity extends Activity {
         }   //onPost
 
     }   //SynUser Class
-
-
-
 
 }   //Main Class

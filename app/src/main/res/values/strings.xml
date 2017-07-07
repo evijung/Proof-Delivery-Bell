@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">POD PXD V.1</string>
+    <string name="app_name" translatable="false">POD PXD RV.1</string>
 
     <string name="sign_in">เข้าสู่ระบบ</string>
     <string name="logout">ลงชื่อออก</string>
@@ -16,6 +16,7 @@
     <string name="date">วันที่</string>
     <string name="job">เลขที่งาน</string>
     <string name="store">สาขา</string>
+    <string name="trip">เที่ยว</string>
     <string name="time">กำหนดถึง</string>
     <string name="external_dir">Img</string>
     <string name="container">บรรจุภัณฑ์</string>
@@ -24,6 +25,7 @@
     <string name="clear">ลบ</string>
     <string name="textview">TextView</string>
     <string name="store_qty">จำนวนสาขา</string>
+    <string name="trip_qty">จำนวนเที่ยว</string>
     <string name="signature">ลายเซ็นต์</string>
     <string name="full_name">ชื่อ - นามสกุล</string>
     <string name="save">บันทึก</string>
@@ -56,4 +58,7 @@
     <string name="Qty">จำนวน</string>
     <string name="confirm">เรียบร้อย</string>
     <string name="back">กลับ</string>
+    <string name="route_no">เลขที่เส้นทาง</string>
+    <string name="depart_date">เวลาออก</string>
+    <string name="image">รูปภาพ</string>
 </resources>

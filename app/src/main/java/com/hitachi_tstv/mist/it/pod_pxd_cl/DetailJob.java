@@ -1,4 +1,4 @@
-package com.hitachi_tstv.mist.it.pod_pxd;
+package com.hitachi_tstv.mist.it.pod_pxd_cl;
 
 import android.Manifest;
 import android.app.Activity;
@@ -674,9 +674,6 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.button4:// Send Picture
-                Log.d("TAG", "Path bool ==> " + (pathFirstImageString == null));
-                Log.d("TAG", "Path bool ==> " + (pathSecondImageString == null));
-                Log.d("TAG", "Path bool ==> " + (pathThirdImageString == null));
 
                 if (pathFirstImageString == null && pathSecondImageString == null && pathThirdImageString == null) {
                     Toast.makeText(this, getResources().getString(R.string.err_conf1), Toast.LENGTH_SHORT).show();

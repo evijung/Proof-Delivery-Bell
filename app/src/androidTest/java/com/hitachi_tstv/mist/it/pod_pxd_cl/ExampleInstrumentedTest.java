@@ -1,4 +1,4 @@
-package com.hitachi_tstv.mist.it.pod_pxd;
+package com.hitachi_tstv.mist.it.pod_pxd_cl;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

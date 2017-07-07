@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.hitachi_tstv.mist.it.pod_pxd.ServiceActivity"
+    tools:context="com.hitachi_tstv.mist.it.pod_pxd_cl.ServiceActivity"
     android:background="@drawable/bg">
 
     <ListView
@@ -17,7 +17,6 @@
         android:layout_height="match_parent"
         android:id="@+id/listJob"
         android:layout_below="@+id/linTopService"
-        android:layout_above="@+id/button2"
         android:background="@color/layout_bg2" />
 
     <LinearLayout

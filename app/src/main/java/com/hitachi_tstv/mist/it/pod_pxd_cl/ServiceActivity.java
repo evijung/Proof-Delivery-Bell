@@ -1,4 +1,4 @@
-package com.hitachi_tstv.mist.it.pod_pxd;
+package com.hitachi_tstv.mist.it.pod_pxd_cl;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -46,7 +46,7 @@ public class ServiceActivity extends Activity {
     private String[] planDateStrings, cnt_storeStrings, planIdStrings;
     private boolean aBoolean = true;
     private String[] workSheetStrings, storeNameStrings, planArrivalTimeStrings, planDtl2_idStrings, truckIdStrings;
-    private String driverChooseString, dateChooseString, truckString ,dateString, planString;
+    private String driverChooseString, dateChooseString, truckString, dateString, planString;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,10 +68,10 @@ public class ServiceActivity extends Activity {
                 break;
             case R.id.job_management:
                 Intent intent1 = new Intent(ServiceActivity.this, JobManagementActivity.class);
-                intent1.putExtra("Date", planDateStrings);
+                intent1.putExtra("Date", planDateStrings[0]);
                 intent1.putExtra("Login", loginStrings);
-                intent1.putExtra("PlanId", planIdStrings);
-                intent1.putExtra("TruckNo", truckIdStrings);
+                intent1.putExtra("PlanId", planIdStrings[0]);
+                intent1.putExtra("TruckNo", truckIdStrings[0]);
                 startActivity(intent1);
                 finish();
 
@@ -79,6 +79,7 @@ public class ServiceActivity extends Activity {
         }
         return true;
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,9 @@ public class ServiceActivity extends Activity {
         dateChooseString = getIntent().getStringExtra("Date");
         truckString = getIntent().getStringExtra("TruckNo");
 
+
+
+
         if (!loginStrings[3].equals("null")) {
 //            Log.d("Tag", "Gender ==> " + loginStrings[3]);
 //            iconImageView.setImageResource(R.drawable.female);
@@ -107,8 +111,7 @@ public class ServiceActivity extends Activity {
             int res;
             if (loginStrings[4].equals("M")) {
                 res = R.drawable.male;
-            }
-            else{
+            } else {
                 res = R.drawable.female;
             }
             iconImageView.setImageResource(res);
@@ -368,7 +371,7 @@ public class ServiceActivity extends Activity {
                 planArrivalTimeStrings = new String[jsonArray.length()];
                 planDtl2_idStrings = new String[jsonArray.length()];
 
-                for (int i=0;i<jsonArray.length();i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
 
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     Log.d("TAG", "Store Name ==> " + jsonObject.getString("store_name"));
@@ -387,7 +390,7 @@ public class ServiceActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         Log.d("TAG", "Date String ==> " + dateString);
-                        Intent intent = new Intent(ServiceActivity.this,DetailJob.class);
+                        Intent intent = new Intent(ServiceActivity.this, DetailJob.class);
                         intent.putExtra("Login", loginStrings);
                         intent.putExtra("planDtl2_id", planDtl2_idStrings[i]);
                         intent.putExtra("Date", dateString);

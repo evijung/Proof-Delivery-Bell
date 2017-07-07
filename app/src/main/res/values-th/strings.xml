@@ -49,4 +49,15 @@
     <string name="Qty">จำนวน</string>
     <string name="confirm">เรียบร้อย</string>
     <string name="back">กลับ</string>
+    <string name="route_no">เลขที่เส้นทาง</string>
+    <string name="depart_date">เวลาออก</string>
+    <string name="cancel">ยกเลิก</string>
+    <string name="fin_load">บันทึกเวลาโหลดเสร็จเรียบร้อย</string>
+    <string name="finish_job">จบงาน</string>
+    <string name="image">รูปภาพ</string>
+    <string name="job_management">จัดการงาน</string>
+    <string name="start_job">เริ่มงาน</string>
+    <string name="start_load">บันทึกเวลาเริ่มโหลดเรียบร้อย</string>
+    <string name="trip">เที่ยว</string>
+    <string name="trip_qty">จำนวนเที่ยว</string>
 </resources>

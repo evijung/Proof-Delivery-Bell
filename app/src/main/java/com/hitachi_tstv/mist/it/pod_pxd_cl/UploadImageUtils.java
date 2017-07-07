@@ -1,4 +1,4 @@
-package com.hitachi_tstv.mist.it.pod_pxd;
+package com.hitachi_tstv.mist.it.pod_pxd_cl;
 
 import android.graphics.Bitmap;
 import android.util.Log;

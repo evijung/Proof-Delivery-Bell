@@ -9,59 +9,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.hitachi_tstv.mist.it.pod_pxd.TripDateActivity"
+    tools:context="com.hitachi_tstv.mist.it.pod_pxd_cl.TripDateActivity"
     android:background="@drawable/bg">
 
-    <TextView
-        android:id="@+id/textView31"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/job" />
 
     <ListView
+        android:id="@+id/lisTripDate"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/lisBtn"
-        android:layout_below="@+id/textView31" />
-
-    <LinearLayout
-        android:id="@+id/lisBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageView8"
-                android:layout_width="@dimen/picture_width"
-                android:layout_height="@dimen/picture_height"
-                app:srcCompat="@drawable/picture" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/button18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/start_job" />
-
-            <Button
-                android:id="@+id/button17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/finish_job" />
-        </LinearLayout>
-    </LinearLayout>
+        android:background="@color/layout_bg2" />
 </RelativeLayout>

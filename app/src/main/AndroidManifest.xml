@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hitachi_tstv.mist.it.pod_pxd">
+    package="com.hitachi_tstv.mist.it.pod_pxd_cl">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd_cl.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,22 +30,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ServiceActivity"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd_cl.ServiceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".JobListView"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd_cl.JobListView"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".DetailJob"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd_cl.DetailJob"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignatureActivity"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd_cl.SignatureActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ReturnContainerActivity"
+            android:name="com.hitachi_tstv.mist.it.pod_pxd_cl.ReturnContainerActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".JobManagementActivity" />
-        <activity android:name=".TripDateActivity"></activity>
+        <activity
+            android:name="com.hitachi_tstv.mist.it.pod_pxd_cl.JobManagementActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.hitachi_tstv.mist.it.pod_pxd_cl.TripDateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.hitachi_tstv.mist.it.pod_pxd_cl.TripDetailActivity"
+            android:screenOrientation="portrait" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="cb5d4c3d49eea37d1668dc88f85df56d9d55bcce" />
     </application>
 
 </manifest>

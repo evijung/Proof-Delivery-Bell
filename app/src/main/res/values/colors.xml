@@ -6,4 +6,5 @@
     <color name="layout_bg1">#6489e859</color>
     <color name="layout_bg2">#78ffffff</color>
     <color name="layout_bg3">#78363636</color>
+    <color name="layout_bg4">#1e363636</color>
 </resources>

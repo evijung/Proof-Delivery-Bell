@@ -1,4 +1,4 @@
-package com.hitachi_tstv.mist.it.pod_pxd;
+package com.hitachi_tstv.mist.it.pod_pxd_cl;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,8 +17,7 @@ public class DetailAdapter extends BaseAdapter {
     private Context context;
     private String[] workSheetStrings, storeNameStrings,
             planArrivalTimeStrings;
-    private TextView workSheetTextView, storeNameTextView,
-            planArrivalTextView;
+    private DetailViewHolder detailViewHolder;
 
     public DetailAdapter(Context context,
                          String[] workSheetStrings,
@@ -48,19 +47,30 @@ public class DetailAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view1 = layoutInflater.inflate(R.layout.detail_listview, viewGroup, false);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.detail_listview, viewGroup, false);
+            detailViewHolder = new DetailViewHolder(view);
+            view.setTag(detailViewHolder);
+        } else {
+            detailViewHolder = (DetailViewHolder) view.getTag();
+        }
 
-        //Bind Widget
-        workSheetTextView = (TextView) view1.findViewById(R.id.textView11);
-        storeNameTextView = (TextView) view1.findViewById(R.id.textView12);
-        planArrivalTextView = (TextView) view1.findViewById(R.id.textView13);
+        //Set Text
+        detailViewHolder.workSheetTextView.setText(workSheetStrings[i]);
+        detailViewHolder.storeNameTextView.setText(storeNameStrings[i]);
+        detailViewHolder.planArrivalTextView.setText(planArrivalTimeStrings[i]);
 
-        //Show View
-        workSheetTextView.setText(workSheetStrings[i]);
-        storeNameTextView.setText(storeNameStrings[i]);
-        planArrivalTextView.setText(planArrivalTimeStrings[i]);
-
-        return view1;
+        return view;
     }
+
+    private class DetailViewHolder {
+        private TextView workSheetTextView, storeNameTextView, planArrivalTextView;
+
+        public DetailViewHolder(View view) {
+            workSheetTextView = (TextView) view.findViewById(R.id.textView11);
+            storeNameTextView = (TextView) view.findViewById(R.id.textView12);
+            planArrivalTextView = (TextView) view.findViewById(R.id.textView13);
+        }
+    }
+
 }   // Main Class

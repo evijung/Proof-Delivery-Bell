@@ -1,4 +1,4 @@
-package com.hitachi_tstv.mist.it.pod_pxd;
+package com.hitachi_tstv.mist.it.pod_pxd_cl;
 
 /**
  * Created by musz on 10/11/2016.
@@ -7,10 +7,10 @@ package com.hitachi_tstv.mist.it.pod_pxd;
 public class MyConstant{
     //Explicit
     private int iconAnInt = R.drawable.warning48; // Image for icon 48x48
-    private String link = "http://service.eternity.co.th/";
-//    private String link = "http://203.154.103.43/";
-    private String project = "TmsPXDTest";
-//    private String project = "TmsPXD";
+//    private String link = "http://service.eternity.co.th/";
+    private String link = "http://203.154.103.43/";
+//    private String project = "TmsPXDTest";
+    private String project = "TmsPXD";
     private String imgLink = link + project + "/app/CenterService/";
     private String titleHaveSpaceString = "มีช่องว่าง";
     private String messageHaveSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง!!";
@@ -21,6 +21,9 @@ public class MyConstant{
     private String messagePasswordFalse = "กรุณาลองใหม่ คุณใส่รหัสผ่านผิด";
     private String urlUserString = link+project+"/app/CenterService/getUser.php";
     private String urlDataWhereDriverID = link+project+"/app/CenterService/getPlan.php";
+    private String urlGetTripData = link+project+"/app/CenterService/getDC_PlanDtl.php";
+    private String urlGetTripDetail = link+project+"/app/CenterService/getDC_TripDtl.php";
+    private String urlGetTripDate = link+project+"/app/CenterService/getDC_PlanDate.php";
     private String urlDataWhereDriverIDanDate = link+project+"/app/CenterService/getPlanDtl.php";
     private String urlDetailWherePlanId = link+project+"/app/CenterService/getTripDtl1.php";
     private String urlContainerList = link+project+"/app/CenterService/getTripDtl_Listview.php";
@@ -31,10 +34,34 @@ public class MyConstant{
     private String urlUpdateStatus = link+project+"/app/CenterService/updateStatusConfirm.php";
     private String urlUpdateLoad = link+project+"/app/CenterService/updateLoad.php";
     private String urlDriverPicture = link+project+"/app/MasterData/driver/avatar/";
-    private String urlDataContainer = link+project+"/app/CenterService/getContainer.php";
     private String urlSaveReturnCont = link+project+"/app/CenterService/setReturnQuantity.php";
     private String urlGetReturnContainerQuantity = link+project+"/app/CenterService/getReturnContainerQuantity.php";
     private String urlGetPlanImg = link+project+"/app/CenterService/getPlanImg.php";
+    private String urlSetDCImagePath = link+project+"/app/CenterService/setImageDCPath.php";
+
+    public String getUrlSetDCImagePath() {
+        return urlSetDCImagePath;
+    }
+
+    public String getUrlGetTripDetail() {
+        return urlGetTripDetail;
+    }
+
+    public String getUrlGetTripDate() {
+        return urlGetTripDate;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public String getUrlGetTripData() {
+        return urlGetTripData;
+    }
 
     public String getImgLink() {
         return imgLink;
@@ -46,10 +73,6 @@ public class MyConstant{
 
     public String getUrlGetReturnContainerQuantity() {
         return urlGetReturnContainerQuantity;
-    }
-
-    public String getUrlDataContainer() {
-        return urlDataContainer;
     }
 
     public String getUrlSaveReturnCont() {

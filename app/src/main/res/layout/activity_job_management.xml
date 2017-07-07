@@ -9,21 +9,24 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.hitachi_tstv.mist.it.pod_pxd.JobManagementActivity"
+    tools:context="com.hitachi_tstv.mist.it.pod_pxd_cl.JobManagementActivity"
     android:background="@drawable/bg">
 
     <Button
         android:id="@+id/button5"
         android:layout_width="368dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/mini_margin"
         android:text="@string/date"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="0dp" />
 
     <ListView
+        android:id="@+id/lisTripJob"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/button5"
+        android:background="@color/layout_bg2"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp" />
 </RelativeLayout>
