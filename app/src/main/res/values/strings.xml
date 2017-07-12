@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">POD PXD RV.1</string>
+    <string name="app_name" translatable="false">POD for PXD</string>
 
     <string name="sign_in">เข้าสู่ระบบ</string>
     <string name="logout">ลงชื่อออก</string>

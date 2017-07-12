@@ -230,7 +230,7 @@ public class TripDetailActivity extends Activity {
         protected void onPostExecute(String s) {
 
             super.onPostExecute(s);
-            Log.d("Tag", "JSON: " + s);
+            Log.d("Tag", "JSON : " + s);
 
             //Get Data From Server
             try {
@@ -270,7 +270,6 @@ public class TripDetailActivity extends Activity {
                     TripDetailAdapter tripDetailAdapter = new TripDetailAdapter(storeCodeStrings, storeNameStrings, storeArrivalStrings, TripDetailActivity.this);
                     listView.setAdapter(tripDetailAdapter);
                 } catch (JSONException e) {
-
                     Log.d("Tag", "e onpost in: " + e);
                 }
 
@@ -338,6 +337,8 @@ public class TripDetailActivity extends Activity {
                                 synUploadImage.execute();
                                 if (!sendStatus) {
                                     pathStartImageString = null;
+                                    Toast.makeText(TripDetailActivity.this, getResources().getText(R.string.save_comp), Toast.LENGTH_LONG).show();
+
 
                                 }
                             } else {
@@ -358,6 +359,8 @@ public class TripDetailActivity extends Activity {
                                 synUploadImage.execute();
                                 if (!sendStatus) {
                                     pathStartImageString = null;
+                                    Toast.makeText(TripDetailActivity.this, getResources().getText(R.string.save_comp), Toast.LENGTH_LONG).show();
+
 
                                 }
                             } else {
@@ -486,7 +489,7 @@ public class TripDetailActivity extends Activity {
         private String mUploadedFileName;
         private String latString, longString, opString;
         ProgressDialog progress;
-        Runnable progressRunnable;
+        Runnable progressRunnable, progressFinishRunnable;
         Handler pdCanceller;
 
         public SynUploadImage(Context context, Bitmap bitmap, String mUploadedFileName, String latString, String longString, String opString) {
@@ -511,6 +514,15 @@ public class TripDetailActivity extends Activity {
                 @Override
                 public void run() {
                     progress.cancel();
+
+                }
+            };
+
+            progressFinishRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    progress.cancel();
+                    finish();
                 }
             };
         }
@@ -560,9 +572,8 @@ public class TripDetailActivity extends Activity {
                         Toast.makeText(context, getResources().getString(R.string.add_img_comp), Toast.LENGTH_SHORT).show();
                     }
                 });
-
                 pdCanceller = new Handler();
-                pdCanceller.postDelayed(progressRunnable, 3000);
+                pdCanceller.postDelayed(progressFinishRunnable, 3000);
 
             } else {
                 runOnUiThread(new Runnable() {
@@ -571,13 +582,11 @@ public class TripDetailActivity extends Activity {
                         Toast.makeText(context, getResources().getString(R.string.add_img_incomp), Toast.LENGTH_SHORT).show();
                     }
                 });
-
                 pdCanceller = new Handler();
                 pdCanceller.postDelayed(progressRunnable, 3000);
             }
 
         }
     }
-
 
 }

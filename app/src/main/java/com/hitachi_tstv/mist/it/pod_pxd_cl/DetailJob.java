@@ -62,7 +62,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
     private Button arrivalButton, takeImgButton, returnButton, confirmButton, signatureButton, contractButton, backButton, startLoadButton, finLoadButton, sendButton;
     private MyConstant myConstant = new MyConstant();
     private String[] loginStrings, containerStrings, quantityStrings;
-    private String dbFirstImgString, dbSecondImgString, dbThirdImgString, dbArriveImgString, dbFirstPathString, dbSecondPathString, dbThirdPathString, dbArrivePathString;
+    private String dbFirstImgString, dbSecondImgString, dbThirdImgString, dbArriveImgString, dbFirstPathString, dbSecondPathString, dbThirdPathString, dbArrivePathString, truckNoString;
     private String planDtl2_Id, storeCodeString, storeNameString, planIdString, flagString, planDateString, pathFirstImageString, pathSecondImageString, pathThirdImageString, pathFourthImageString, driverUserNameString, getTimeDate, storeLatString, storeLngString, storeRadiusString;
     private boolean sendStatus;
     private LocationManager locationManager;
@@ -95,7 +95,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 intent1.putExtra("Login", loginStrings);
                 intent1.putExtra("Date", planDateString);
                 intent1.putExtra("PlanId", planIdString);
-                intent1.putExtra("TruckNo", "");
+                intent1.putExtra("TruckNo", truckNoString);
                 startActivity(intent1);
                 finish();
                 break;
@@ -129,6 +129,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
         planDtl2_Id = getIntent().getStringExtra("planDtl2_id");
         planDateString = getIntent().getStringExtra("Date");
         planIdString = getIntent().getStringExtra("PlanId");
+        truckNoString = getIntent().getStringExtra("TruckNo");
         driverUserNameString = loginStrings[2];
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
@@ -570,11 +571,8 @@ public class DetailJob extends Activity implements View.OnClickListener {
 
                             SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
                             synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString, planDtl2_Id);
-
                         }
                     }
-
-
                 }
                 break;
 
@@ -584,6 +582,7 @@ public class DetailJob extends Activity implements View.OnClickListener {
                 intentSign.putExtra("PlanDtl", planDtl2_Id);
                 intentSign.putExtra("Date", planDateString);
                 intentSign.putExtra("PlanId", planIdString);
+                intentSign.putExtra("TruckNo", truckNoString);
                 startActivity(intentSign);
                 break;
 

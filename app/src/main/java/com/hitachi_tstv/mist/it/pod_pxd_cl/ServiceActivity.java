@@ -68,10 +68,31 @@ public class ServiceActivity extends Activity {
                 break;
             case R.id.job_management:
                 Intent intent1 = new Intent(ServiceActivity.this, JobManagementActivity.class);
-                intent1.putExtra("Date", planDateStrings[0]);
+                if (planDateStrings.length != 0) {
+                    intent1.putExtra("Date", planDateStrings[0]);
+                } else if (dateChooseString != null) {
+                    intent1.putExtra("Date", dateChooseString);
+                } else {
+                    intent1.putExtra("Date", "");
+                }
                 intent1.putExtra("Login", loginStrings);
-                intent1.putExtra("PlanId", planIdStrings[0]);
-                intent1.putExtra("TruckNo", truckIdStrings[0]);
+                if (planIdStrings.length != 0) {
+                    Log.d("Tag", "Plan ID 1 ==> " + planIdStrings.length);
+                    intent1.putExtra("PlanId", planIdStrings[0]);
+                } else if (driverChooseString != null) {
+                    Log.d("Tag", "Plan ID 2 ==> " + driverChooseString);
+                    intent1.putExtra("PlanId", driverChooseString);
+                } else {
+                    Log.d("Tag", "Plan ID 3 ==> ");
+                    intent1.putExtra("PlanId", "");
+                }
+                if (truckIdStrings.length != 0) {
+                    intent1.putExtra("TruckNo", truckIdStrings[0]);
+                } else if (truckString != null) {
+                    intent1.putExtra("TruckNo", truckString);
+                } else {
+                    intent1.putExtra("TruckNo", "");
+                }
                 startActivity(intent1);
                 finish();
 
@@ -98,8 +119,6 @@ public class ServiceActivity extends Activity {
         driverChooseString = getIntent().getStringExtra("PlanId");
         dateChooseString = getIntent().getStringExtra("Date");
         truckString = getIntent().getStringExtra("TruckNo");
-
-
 
 
         if (!loginStrings[3].equals("null")) {
@@ -395,6 +414,7 @@ public class ServiceActivity extends Activity {
                         intent.putExtra("planDtl2_id", planDtl2_idStrings[i]);
                         intent.putExtra("Date", dateString);
                         intent.putExtra("PlanId", planString);
+                        intent.putExtra("TruckNo", truckString);
                         startActivity(intent);
                         finish();
                     }

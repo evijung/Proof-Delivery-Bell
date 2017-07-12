@@ -43,7 +43,7 @@ public class SignatureActivity extends Activity {
     File mypath;
     MyConstant myConstant;
     private String[] loginStrings;
-    private String plan2_id, sign_name, planDateString, planIdString;
+    private String plan2_id, sign_name, planDateString, planIdString, truckNoString;
 
 
     private String uniqueId;
@@ -67,6 +67,7 @@ public class SignatureActivity extends Activity {
         loginStrings = getIntent().getStringArrayExtra("Login");
         planDateString = getIntent().getStringExtra("Date");
         planIdString = getIntent().getStringExtra("PlanId");
+        truckNoString = getIntent().getStringExtra("TruckNo");
         
         myConstant = new MyConstant();
 
